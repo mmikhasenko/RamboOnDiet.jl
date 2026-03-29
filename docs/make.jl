@@ -1,9 +1,10 @@
 import Pkg
+Pkg.resolve()
 Pkg.instantiate()
 
 using Documenter
 using Literate
-using PhaseSpaceRembo
+using RemboOnDiet
 
 const DOCS_ROOT = @__DIR__
 const LITERATE_OUTPUT = joinpath(DOCS_ROOT, "src", "generated")
@@ -18,8 +19,8 @@ Literate.markdown(
 )
 
 makedocs(
-    sitename = "PhaseSpaceRembo",
-    modules = [PhaseSpaceRembo],
+    sitename = "RemboOnDiet",
+    modules = [RemboOnDiet],
     source = "src",
     build = "build",
     format = Documenter.HTML(),

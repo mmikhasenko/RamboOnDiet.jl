@@ -1,6 +1,6 @@
-# PhaseSpaceRembo.jl
+# RemboOnDiet.jl
 
-`PhaseSpaceRembo.jl` is a Julia package for generating relativistic `N`-body
+`RemboOnDiet.jl` is a Julia package for generating relativistic `N`-body
 phase-space points with a RAMBO-on-diet style sampler.
 
 ## Docs
@@ -19,7 +19,7 @@ Then open `docs/build/index.html`.
 ## Quick Start
 
 ```julia
-using PhaseSpaceRembo
+using RemboOnDiet
 
 masses = [0.93827208816, 0.493677, 0.13957039]
 generator = PhaseSpaceGenerator(masses, 2.28646)

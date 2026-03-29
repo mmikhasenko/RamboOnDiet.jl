@@ -1,4 +1,4 @@
-name = "PhaseSpaceRembo"
+name = "RemboOnDiet"
 uuid = "1cb55d97-0cb4-4390-8d6a-9cd22df9b4c4"
 authors = ["OpenAI Codex", "Misha Mikhasenko <mikhail.mikhasenko@gmail.com>"]
 version = "0.1.0"

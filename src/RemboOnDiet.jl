@@ -1,4 +1,4 @@
-module PhaseSpaceRembo
+module RemboOnDiet
 
 using LinearAlgebra
 using Random

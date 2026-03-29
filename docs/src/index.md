@@ -1,6 +1,6 @@
-# PhaseSpaceRembo
+# RemboOnDiet
 
-`PhaseSpaceRembo.jl` implements a RAMBO-on-diet style phase-space generator built on top of
+`RemboOnDiet.jl` implements a RAMBO-on-diet style phase-space generator built on top of
 [`FourVectors.jl`](https://github.com/).
 
 ```@contents

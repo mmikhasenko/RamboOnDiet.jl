@@ -2,7 +2,7 @@
 #
 # This tutorial shows a simple three-body workflow:
 # 1. build the total-state four-vector,
-# 2. generate events with `PhaseSpaceRembo.jl`,
+# 2. generate events with `RemboOnDiet.jl`,
 # 3. move the samples into a `DataFrame`,
 # 4. plot Dalitz histograms with `Plots.jl`.
 
@@ -11,7 +11,7 @@ using Statistics
 using DataFrames
 ENV["GKSwstype"] = "100"
 using Plots
-using PhaseSpaceRembo
+using RemboOnDiet
 using FourVectors
 
 gr()

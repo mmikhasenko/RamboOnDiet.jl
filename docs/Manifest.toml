@@ -2,7 +2,7 @@
 
 julia_version = "1.11.6"
 manifest_format = "2.0"
-project_hash = "b1c9db6fd75c76b443449516b7cb4b81742f7033"
+project_hash = "c31e0ef455d96436736f741865d32b5fdcd1919d"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -684,7 +684,7 @@ git-tree-sha1 = "7d2f8f21da5db6a806faf7b9b292296da42b2810"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
 version = "2.8.3"
 
-[[deps.PhaseSpaceRembo]]
+[[deps.RemboOnDiet]]
 deps = ["FourVectors", "LinearAlgebra", "LorentzVectorBase", "Random", "StaticArrays"]
 path = ".."
 uuid = "1cb55d97-0cb4-4390-8d6a-9cd22df9b4c4"
