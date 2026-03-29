@@ -1,5 +1,4 @@
 import Pkg
-Pkg.resolve()
 Pkg.instantiate()
 
 using Documenter
