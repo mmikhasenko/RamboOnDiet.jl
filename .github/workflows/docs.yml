@@ -7,28 +7,22 @@ on:
   pull_request:
 
 permissions:
-  actions: write
-  contents: write
-  pull-requests: read
-  statuses: write
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   build-docs:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
 
-      - name: Clone local path dependencies
+      - name: Install Julia
         run: |
-          git clone --depth 1 https://github.com/mmikhasenko/FourVectors.jl ../FourVectors.jl
-          git clone --depth 1 https://github.com/JuliaHEP/LorentzVectorBase.jl ../../LorentzVectorBase.jl
-
-      - uses: julia-actions/setup-julia@v2
-        with:
-          version: '1.11'
+          curl -fsSL https://install.julialang.org | sh -s -- --yes --default-channel=1.11
+          echo "$HOME/.juliaup/bin" >> "$GITHUB_PATH"
 
       - uses: actions/cache@v5
         with:
@@ -45,3 +39,25 @@ jobs:
 
       - name: Build docs
         run: julia --project=docs docs/make.jl
+
+      - name: Configure Pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: docs/build
+
+  deploy-docs:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build-docs
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

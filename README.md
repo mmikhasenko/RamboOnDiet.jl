@@ -1,10 +1,28 @@
 # RemboOnDiet.jl
 
+[![Docs](https://img.shields.io/badge/docs-dev-blue.svg)](https://mmikhasenko.github.io/RamboOnDiet.jl/)
+[![CI](https://github.com/mmikhasenko/RamboOnDiet.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/mmikhasenko/RamboOnDiet.jl/actions/workflows/ci.yml)
+[![Docs workflow](https://github.com/mmikhasenko/RamboOnDiet.jl/actions/workflows/docs.yml/badge.svg)](https://github.com/mmikhasenko/RamboOnDiet.jl/actions/workflows/docs.yml)
+
 `RemboOnDiet.jl` is a Julia package for generating relativistic `N`-body
-phase-space points with a RAMBO-on-diet style sampler.
+phase-space points with a RAMBO-on-diet style sampler, with emphasis on
+numerically validated phase-space generation and Dalitz-plot studies.
+
+## Installation
+
+```julia
+using Pkg
+Pkg.add(url = "https://github.com/mmikhasenko/FourVectors.jl")
+Pkg.add(url = "https://github.com/mmikhasenko/RamboOnDiet.jl")
+```
+
+`FourVectors.jl` is currently unregistered. If you are working with a Julia
+version different from the one used by the checked-in manifests in this
+repository, install `FourVectors.jl` explicitly before `RemboOnDiet.jl`.
 
 ## Docs
 
+- [Documentation website](https://mmikhasenko.github.io/RamboOnDiet.jl/)
 - [Documentation overview](docs/src/index.md)
 - [Three-body tutorial](docs/src/generated/three-body.md)
 
@@ -20,6 +38,7 @@ Then open `docs/build/index.html`.
 
 ```julia
 using RemboOnDiet
+using FourVectors
 
 masses = [0.93827208816, 0.493677, 0.13957039]
 generator = PhaseSpaceGenerator(masses, 2.28646)

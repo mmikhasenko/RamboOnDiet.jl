@@ -29,8 +29,3 @@ makedocs(
         "Three-Body Tutorial" => "generated/three-body.md",
     ],
 )
-
-deploydocs(
-    repo = "github.com/mmikhasenko/RamboOnDiet.jl.git",
-    devbranch = "main",
-)

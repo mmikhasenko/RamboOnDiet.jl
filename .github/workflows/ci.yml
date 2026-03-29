@@ -9,19 +9,13 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
     steps:
       - uses: actions/checkout@v5
 
-      - name: Clone local path dependencies
+      - name: Install Julia
         run: |
-          git clone --depth 1 https://github.com/mmikhasenko/FourVectors.jl ../FourVectors.jl
-          git clone --depth 1 https://github.com/JuliaHEP/LorentzVectorBase.jl ../../LorentzVectorBase.jl
-
-      - uses: julia-actions/setup-julia@v2
-        with:
-          version: '1.11'
+          curl -fsSL https://install.julialang.org | sh -s -- --yes --default-channel=1.11
+          echo "$HOME/.juliaup/bin" >> "$GITHUB_PATH"
 
       - uses: actions/cache@v5
         with:
@@ -35,6 +29,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-julia-
 
-      - uses: julia-actions/julia-buildpkg@v1
+      - name: Build package
+        run: julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.build()'
 
-      - uses: julia-actions/julia-runtest@v1
+      - name: Run tests
+        run: julia --project=. -e 'using Pkg; Pkg.test()'

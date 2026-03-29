@@ -20,7 +20,10 @@ version = "1.11.0"
 
 [[deps.FourVectors]]
 deps = ["LinearAlgebra", "LorentzVectorBase", "Parameters", "StaticArrays"]
+git-tree-sha1 = "0ce8f0d419dcac15ba9e261c088292a1f6f6fe0e"
 path = "../FourVectors.jl"
+repo-rev = "main"
+repo-url = "https://github.com/mmikhasenko/FourVectors.jl"
 uuid = "b122eb78-8380-428a-b8c8-584a022ae8b6"
 version = "0.3.1"
 
