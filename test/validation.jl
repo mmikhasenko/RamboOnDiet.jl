@@ -81,11 +81,13 @@ function validate_threebody_flatness(points, masses, M; bins = 24)
     ys = Float64[]
     ws = Float64[]
     target = M^2 + sum(abs2, masses)
+    max_kibble = -Inf
+    max_sumrule_violation = 0.0
 
     for point in points
         invs = invariant_masses(point.momenta)
-        @test kibble(invs, masses, M) <= 1e-8
-        @test invs.s23 + invs.s31 + invs.s12 ≈ target atol = 1e-10 rtol = 1e-10
+        max_kibble = max(max_kibble, kibble(invs, masses, M))
+        max_sumrule_violation = max(max_sumrule_violation, abs(invs.s23 + invs.s31 + invs.s12 - target))
         push!(xs, invs.s23)
         push!(ys, invs.s12)
         push!(ws, phase_space_weight(point))
@@ -103,6 +105,8 @@ function validate_threebody_flatness(points, masses, M; bins = 24)
     weight_variance_factor = mean(abs2, ws) / mean(ws)^2
     sampling_floor = sqrt(weight_variance_factor * mean(ws) / weighted_stats.mean)
 
+    @test max_kibble ≤ 1e-8
+    @test max_sumrule_violation ≤ 1e-10
     @test weighted_stats.cv < 3.5 * sampling_floor
 end
 
