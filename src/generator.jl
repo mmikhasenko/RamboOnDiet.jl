@@ -1,7 +1,7 @@
 required_random_numbers(n::Integer) = 3 * n - 4
 
-function generate_point(rng::AbstractRNG, generator::PhaseSpaceGenerator{T}) where {T}
-    rs = rand(rng, T, generator.random_numbers)
+function generate_point(rng::AbstractRNG, generator::PhaseSpaceGenerator{T,N}) where {T,N}
+    rs = SVector{required_random_numbers(N),T}(ntuple(_ -> rand(rng, T), Val(required_random_numbers(N))))
     return generate_from_unit_hypercube(rs, generator)
 end
 

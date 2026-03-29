@@ -3,6 +3,7 @@ using Random
 using PhaseSpaceRembo
 using FourVectors
 using LorentzVectorBase
+using StaticArrays
 
 include("validation.jl")
 
@@ -24,6 +25,10 @@ const JULIA_SEED = 20260329
         @test generator.random_numbers == required_random_numbers(length(generator.masses))
         @test generator.threshold == sum(generator.masses)
         @test generator.invariant_mass ≈ 2.0 atol = 1e-12 rtol = 1e-12
+
+        static_generator = PhaseSpaceGenerator(SVector(0.3, 0.4, 0.5), 2.0)
+        @test static_generator.masses isa SVector{3,Float64}
+        @test static_generator.random_numbers == 5
     end
 
     @testset "Massless constant weights" begin

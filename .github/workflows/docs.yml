@@ -6,9 +6,17 @@ on:
       - main
   pull_request:
 
+permissions:
+  actions: write
+  contents: write
+  pull-requests: read
+  statuses: write
+
 jobs:
   build-docs:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -25,9 +33,3 @@ jobs:
 
       - name: Build docs
         run: julia --project=docs docs/make.jl
-
-      - name: Upload docs artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: docs-html
-          path: docs/build
