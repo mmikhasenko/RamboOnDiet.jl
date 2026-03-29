@@ -17,8 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Clone local path dependencies
         run: |
@@ -29,7 +30,18 @@ jobs:
         with:
           version: '1.11'
 
-      - uses: julia-actions/cache@v2
+      - uses: actions/cache@v5
+        with:
+          path: |
+            ~/.julia/artifacts
+            ~/.julia/compiled
+            ~/.julia/packages
+            ~/.julia/scratchspaces
+            ~/.julia/registries
+          key: ${{ runner.os }}-julia-docs-${{ hashFiles('**/Project.toml', '**/Manifest.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-julia-docs-
+            ${{ runner.os }}-julia-
 
       - name: Build docs
         run: julia --project=docs docs/make.jl
