@@ -18,6 +18,7 @@ ENV["GKSwstype"] = "100"
 using Plots
 using RemboOnDiet
 using FourVectors
+using ThreeBodyDecays
 
 gr()
 default(size = (780, 620), legend = false)
@@ -25,7 +26,7 @@ default(size = (780, 620), legend = false)
 
 ## Utility helpers
 
-We will use the invariant-mass pairs `(s23, s12)` as Dalitz coordinates.
+We will use the invariant-mass pairs `(s23, s12) = (\sigma_1, \sigma_3)` as Dalitz coordinates.
 
 ````@example three-body
 function events_table(points)
@@ -37,33 +38,9 @@ function events_table(points)
     )
 end
 
-dalitz_limits_s23(masses, m0) = ((masses[2] + masses[3])^2, (m0 - masses[1])^2)
-dalitz_limits_s12(masses, m0) = ((masses[1] + masses[2])^2, (m0 - masses[3])^2)
-
-function s12_limits_given_s23(s23, masses, m0)
-    m1, m2, m3 = masses
-    e1 = (m0^2 - s23 - m1^2) / (2 * sqrt(s23))
-    e2 = (s23 + m2^2 - m3^2) / (2 * sqrt(s23))
-    p1 = sqrt(max(0.0, e1^2 - m1^2))
-    p2 = sqrt(max(0.0, e2^2 - m2^2))
-    center = m1^2 + m2^2 + 2 * e1 * e2
-    span = 2 * p1 * p2
-    return center - span, center + span
-end
-
-function kibble_value(s23, s12, masses, m0)
-    s31 = m0^2 + sum(abs2, masses) - s23 - s12
-    msq = (masses .^ 2)..., m0^2
-    return kallen(
-        kallen(msq[4], msq[1], s23),
-        kallen(msq[4], msq[2], s31),
-        kallen(msq[4], msq[3], s12),
-    )
-end
-
-function dalitz_heatmap(df, masses, m0; bins = 60, weights = nothing, title = "")
-    xedges = collect(range(dalitz_limits_s23(masses, m0)...; length = bins + 1))
-    yedges = collect(range(dalitz_limits_s12(masses, m0)...; length = bins + 1))
+function dalitz_heatmap(df, ms; bins = 60, weights = nothing, title = "")
+    xedges = collect(range(lims1(ms)...; length = bins + 1))
+    yedges = collect(range(lims3(ms)...; length = bins + 1))
     xcenters = @. (xedges[1:end-1] + xedges[2:end]) / 2
     ycenters = @. (yedges[1:end-1] + yedges[2:end]) / 2
     counts = zeros(Float64, bins, bins)
@@ -90,15 +67,13 @@ function dalitz_heatmap(df, masses, m0; bins = 60, weights = nothing, title = ""
     for iy in 1:bins, ix in 1:bins
         x = xcenters[ix]
         y = ycenters[iy]
-        z[iy, ix] = kibble_value(x, y, masses, m0) <= 0 ? counts[iy, ix] : NaN
+        σs = Invariants(ms; σ1 = x, σ3 = y)
+        z[iy, ix] = isphysical(σs, ms) ? counts[iy, ix] : NaN
     end
 
-    border_x = collect(range(dalitz_limits_s23(masses, m0)...; length = 500))
-    border_lo = similar(border_x)
-    border_hi = similar(border_x)
-    for i in eachindex(border_x)
-        border_lo[i], border_hi[i] = s12_limits_given_s23(border_x[i], masses, m0)
-    end
+    boundary = border13(ms; Nx = 500)
+    border_x = [point.σ1 for point in boundary]
+    border_y = [point.σ3 for point in boundary]
 
     plt = heatmap(
         xcenters,
@@ -112,8 +87,7 @@ function dalitz_heatmap(df, masses, m0; bins = 60, weights = nothing, title = ""
         c = :viridis,
         framestyle = :box,
     )
-    plot!(plt, border_x, border_lo; color = :white, linewidth = 2)
-    plot!(plt, border_x, border_hi; color = :white, linewidth = 2)
+    plot!(plt, border_x, border_y; color = :white, linewidth = 2)
     return plt
 end
 ````
@@ -130,6 +104,7 @@ massless_masses = [0.0, 0.0, 0.0]
 massless_generator = PhaseSpaceGenerator(massless_masses, sqrt_s)
 massless_points = [rand(rng, massless_generator) for _ in 1:80_000]
 massless_df = events_table(massless_points)
+massless_ms = ThreeBodyMasses(0.0, 0.0, 0.0; m0 = sqrt_s)
 
 first(massless_df, 5)
 
@@ -137,8 +112,7 @@ allunique(round.(massless_df.jacobian; digits = 12))
 
 massless_plot = dalitz_heatmap(
     massless_df,
-    massless_masses,
-    sqrt_s;
+    massless_ms;
     bins = 60,
     title = "Massless 3-body Dalitz population",
 )
@@ -164,6 +138,7 @@ massive_masses = [lc_masses.p, lc_masses.K, lc_masses.π]
 massive_generator = PhaseSpaceGenerator(massive_masses, lc_masses.m0)
 massive_points = [rand(rng, massive_generator) for _ in 1:80_000]
 massive_df = events_table(massive_points)
+massive_ms = ThreeBodyMasses(lc_masses.p, lc_masses.K, lc_masses.π; m0 = lc_masses.m0)
 
 first(massive_df, 5)
 
@@ -171,8 +146,7 @@ std(massive_df.jacobian) / mean(massive_df.jacobian)
 
 massive_plot = dalitz_heatmap(
     massive_df,
-    massive_masses,
-    lc_masses.m0;
+    massive_ms;
     bins = 60,
     weights = massive_df.jacobian,
     title = "Lc -> pKπ weighted Dalitz from the main sampler",

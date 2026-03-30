@@ -1,0 +1,57 @@
+name: Lint
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "*"
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+
+jobs:
+  formatting:
+    name: Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Julia
+        run: |
+          curl -fsSL https://install.julialang.org | sh -s -- --yes --default-channel=1.11
+          echo "$HOME/.juliaup/bin" >> "$GITHUB_PATH"
+
+      - uses: actions/cache@v5
+        with:
+          path: |
+            ~/.julia/artifacts
+            ~/.julia/compiled
+            ~/.julia/packages
+            ~/.julia/scratchspaces
+            ~/.julia/registries
+          key: ${{ runner.os }}-julia-lint-${{ hashFiles('**/Project.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-julia-lint-
+            ${{ runner.os }}-julia-
+
+      - name: Check formatting
+        run: |
+          using Pkg
+          Pkg.add(name = "JuliaFormatter", uuid = "98e50ef6-ec3c-48c1-b100-5d4f298c2d73")
+          using JuliaFormatter
+          format(".") || error("JuliaFormatter found formatting differences.")
+        shell: julia --color=yes --project=. {0}
+
+  links:
+    name: Link checker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Link Checker
+        uses: lycheeverse/lychee-action@v2
+        with:
+          fail: true

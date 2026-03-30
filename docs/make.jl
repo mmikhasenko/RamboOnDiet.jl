@@ -22,10 +22,12 @@ makedocs(
     modules = [RemboOnDiet],
     source = "src",
     build = "build",
-    format = Documenter.HTML(),
+    format = Documenter.HTML(repolink = "https://github.com/mmikhasenko/RamboOnDiet.jl"),
     remotes = nothing,
     pages = [
         "Home" => "index.md",
+        "Algorithm" => "algorithm.md",
+        "Implementation" => "implementation.md",
         "Three-Body Tutorial" => "generated/three-body.md",
     ],
 )
