@@ -26,6 +26,19 @@ Q_{n-1} \to p_{n-1} + p_n,
 where the intermediate cluster masses `M_i = \sqrt{Q_i^2}` are generated from the
 unit hypercube.
 
+This is the same general strategy introduced for massless phase space by Kleiss, Stirling,
+and Ellis in the original RAMBO paper and then recast into the minimal `3n - 4`
+parameterization by Plätzer's RAMBO-on-diet construction. In this package,
+`solve_mass_parameter` numerically inverts the one-dimensional cumulative map that appears
+in that RAMBO-on-diet mass parametrization.
+
+References:
+
+- R. Kleiss, W. J. Stirling, and S. D. Ellis, "A new Monte Carlo treatment of multiparticle
+  phase space at high energies", Comput. Phys. Commun. 40 (1986) 359-373,
+  [doi:10.1016/0010-4655(86)90119-0](https://doi.org/10.1016/0010-4655(86)90119-0).
+- S. Plätzer, "RAMBO on diet", [arXiv:1308.2922](https://arxiv.org/abs/1308.2922).
+
 ## Random variables
 
 For `n` particles the generator consumes
@@ -142,6 +155,11 @@ with the two-body density
 ```math
 \rho_2(M; m_a, m_b) = \frac{q(M; m_a, m_b)}{4M}.
 ```
+
+In [src/generator.jl](/Users/mikhailmikhasenko/Documents/JuliaDev.CAT/PhaseSpaceRembo/src/generator.jl),
+this factorization appears as two explicit products: one loop over `i = 2:(n - 1)`
+for the `M_i / \mu_i` terms and one loop over `i = 2:n` for the ratio of massive to
+massless two-body densities.
 
 That is why the three-body massless Dalitz plot is flat without weights, while the
 massive Dalitz plot becomes flat only after filling with `weights = phase_space_weight(point)`.

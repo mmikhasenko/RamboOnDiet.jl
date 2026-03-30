@@ -12,6 +12,30 @@ The package is organized around three ideas:
 - a phase-space weight that is constant in the massless case and becomes the corrective
   Jacobian for massive final states.
 
+The implementation always uses the same main sampler. The 2-body and 3-body cases are
+validation anchors because their expected geometry is especially transparent, not because
+they use a separate generator.
+
+## Quick Start
+
+```julia
+using RemboOnDiet
+
+generator = PhaseSpaceGenerator([0.1, 0.2, 0.3, 0.4], 5.0)
+point = rand(generator)
+
+point.momenta
+phase_space_weight(point)
+```
+
+## Main API
+
+- `PhaseSpaceGenerator(masses, sqrt_s)`
+- `PhaseSpaceGenerator(masses, total::FourVector)`
+- `rand(generator)`
+- `phase_space_weight(point)`
+- `total_momentum(point.momenta)`
+
 ```@contents
 Pages = ["algorithm.md", "implementation.md", "generated/three-body.md"]
 Depth = 2

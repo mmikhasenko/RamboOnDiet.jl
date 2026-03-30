@@ -76,7 +76,7 @@ The code does not construct explicit rotation matrices. Instead it generates a u
 (\sin\theta\cos\phi,\ \sin\theta\sin\phi,\ \cos\theta)
 ```
 
-a helper named `unit_direction` in [src/kinematics.jl](/Users/mikhailmikhasenko/Documents/JuliaDev.CAT/PhaseSpaceRembo/src/kinematics.jl). In the cluster rest frame, this is equivalent to taking
+through the helper `unit_direction` in [src/kinematics.jl](/Users/mikhailmikhasenko/Documents/JuliaDev.CAT/PhaseSpaceRembo/src/kinematics.jl). In the cluster rest frame, this is equivalent to taking
 a reference momentum on the `z` axis and rotating it by the polar and azimuthal angles.
 
 This direct construction keeps the implementation short and avoids carrying rotation
