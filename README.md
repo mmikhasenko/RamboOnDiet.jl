@@ -8,6 +8,10 @@
 phase-space points with a RAMBO-on-diet style sampler, with emphasis on
 numerically validated phase-space generation and Dalitz-plot studies.
 
+The original version of the package was implemented using Codex/GPT-5.4,
+based on the [RAMBO on diet](https://arxiv.org/abs/1308.2922) research paper,
+validated using `ThreeBodyDecays.jl`, and reviewed by a human.
+
 ## Installation
 
 ```julia

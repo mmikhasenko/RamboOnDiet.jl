@@ -95,10 +95,10 @@ extracts
 The boosted momentum is then
 
 ```math
-\vec p\,' = \vec p +
+\vec p^{\,\prime} = \vec p +
 \left[\frac{\gamma - 1}{\beta^2}(\vec\beta\cdot\vec p) + \gamma p^0\right]\vec\beta,
 \qquad
-p'^0 = \gamma(p^0 + \vec\beta\cdot\vec p).
+p^{\prime 0} = \gamma(p^0 + \vec\beta\cdot\vec p).
 ```
 
 This is exactly the standard boost of a four-vector by the velocity of the parent cluster.
