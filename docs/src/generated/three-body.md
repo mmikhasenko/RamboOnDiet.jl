@@ -41,8 +41,8 @@ end
 function dalitz_heatmap(df, ms; bins = 60, weights = nothing, title = "")
     xedges = collect(range(lims1(ms)...; length = bins + 1))
     yedges = collect(range(lims3(ms)...; length = bins + 1))
-    xcenters = @. (xedges[1:end-1] + xedges[2:end]) / 2
-    ycenters = @. (yedges[1:end-1] + yedges[2:end]) / 2
+    xcenters = @. (xedges[1:(end-1)] + xedges[2:end]) / 2
+    ycenters = @. (yedges[1:(end-1)] + yedges[2:end]) / 2
     counts = zeros(Float64, bins, bins)
 
     if isnothing(weights)
@@ -64,7 +64,7 @@ function dalitz_heatmap(df, ms; bins = 60, weights = nothing, title = "")
     end
 
     z = Matrix{Float64}(undef, bins, bins)
-    for iy in 1:bins, ix in 1:bins
+    for iy = 1:bins, ix = 1:bins
         x = xcenters[ix]
         y = ycenters[iy]
         σs = Invariants(ms; σ1 = x, σ3 = y)
@@ -102,7 +102,7 @@ rng = MersenneTwister(7)
 sqrt_s = 2.0
 massless_masses = [0.0, 0.0, 0.0]
 massless_generator = PhaseSpaceGenerator(massless_masses, sqrt_s)
-massless_points = [rand(rng, massless_generator) for _ in 1:80_000]
+massless_points = [rand(rng, massless_generator) for _ = 1:80_000]
 massless_df = events_table(massless_points)
 massless_ms = ThreeBodyMasses(0.0, 0.0, 0.0; m0 = sqrt_s)
 
@@ -127,16 +127,11 @@ The physically flat phase-space density is recovered by filling the Dalitz histo
 with `weights = jacobian`.
 
 ````@example three-body
-lc_masses = (
-    m0 = 2.28646,
-    p = 0.93827208816,
-    K = 0.493677,
-    π = 0.13957039,
-)
+lc_masses = (m0 = 2.28646, p = 0.93827208816, K = 0.493677, π = 0.13957039)
 
 massive_masses = [lc_masses.p, lc_masses.K, lc_masses.π]
 massive_generator = PhaseSpaceGenerator(massive_masses, lc_masses.m0)
-massive_points = [rand(rng, massive_generator) for _ in 1:80_000]
+massive_points = [rand(rng, massive_generator) for _ = 1:80_000]
 massive_df = events_table(massive_points)
 massive_ms = ThreeBodyMasses(lc_masses.p, lc_masses.K, lc_masses.π; m0 = lc_masses.m0)
 

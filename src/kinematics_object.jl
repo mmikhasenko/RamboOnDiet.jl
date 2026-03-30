@@ -26,7 +26,12 @@ function PhaseSpaceGenerator(
     N = length(massesT)
     invariant_mass = mass(total)
     threshold = sum(massesT)
-    return PhaseSpaceGenerator{T,N,typeof(massesT)}(massesT, total, invariant_mass, threshold)
+    return PhaseSpaceGenerator{T,N,typeof(massesT)}(
+        massesT,
+        total,
+        invariant_mass,
+        threshold,
+    )
 end
 
 function PhaseSpaceGenerator(

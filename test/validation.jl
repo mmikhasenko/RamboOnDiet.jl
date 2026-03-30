@@ -7,10 +7,14 @@ function validate_point(point, masses, total; atol, rtol)
         @test LorentzVectorBase.mass(p) ≈ m atol = atol rtol = rtol
     end
     total_out = total_momentum(point.momenta)
-    @test LorentzVectorBase.px(total_out) ≈ LorentzVectorBase.px(total) atol = atol rtol = rtol
-    @test LorentzVectorBase.py(total_out) ≈ LorentzVectorBase.py(total) atol = atol rtol = rtol
-    @test LorentzVectorBase.pz(total_out) ≈ LorentzVectorBase.pz(total) atol = atol rtol = rtol
-    @test LorentzVectorBase.E(total_out) ≈ LorentzVectorBase.E(total) atol = atol rtol = rtol
+    @test LorentzVectorBase.px(total_out) ≈ LorentzVectorBase.px(total) atol = atol rtol =
+        rtol
+    @test LorentzVectorBase.py(total_out) ≈ LorentzVectorBase.py(total) atol = atol rtol =
+        rtol
+    @test LorentzVectorBase.pz(total_out) ≈ LorentzVectorBase.pz(total) atol = atol rtol =
+        rtol
+    @test LorentzVectorBase.E(total_out) ≈ LorentzVectorBase.E(total) atol = atol rtol =
+        rtol
 end
 
 function kibble(invs, masses, M)
@@ -60,15 +64,13 @@ function isphysical_dalitz_point(s23, s12, masses, M)
     invs = (s23 = s23, s31 = s31, s12 = s12)
     lo23, hi23 = dalitz_limits_s23(masses, M)
     lo12, hi12 = dalitz_limits_s12(masses, M)
-    return lo23 <= s23 <= hi23 &&
-           lo12 <= s12 <= hi12 &&
-           kibble(invs, masses, M) <= 0
+    return lo23 <= s23 <= hi23 && lo12 <= s12 <= hi12 && kibble(invs, masses, M) <= 0
 end
 
 function bin_fraction(xlo, xhi, ylo, yhi, masses, M; subdivisions = 5)
     hits = 0
     total = subdivisions^2
-    for ix in 1:subdivisions, iy in 1:subdivisions
+    for ix = 1:subdivisions, iy = 1:subdivisions
         x = xlo + (ix - 0.5) * (xhi - xlo) / subdivisions
         y = ylo + (iy - 0.5) * (yhi - ylo) / subdivisions
         hits += isphysical_dalitz_point(x, y, masses, M)
@@ -87,7 +89,8 @@ function validate_threebody_flatness(points, masses, M; bins = 24)
     for point in points
         invs = invariant_masses(point.momenta)
         max_kibble = max(max_kibble, kibble(invs, masses, M))
-        max_sumrule_violation = max(max_sumrule_violation, abs(invs.s23 + invs.s31 + invs.s12 - target))
+        max_sumrule_violation =
+            max(max_sumrule_violation, abs(invs.s23 + invs.s31 + invs.s12 - target))
         push!(xs, invs.s23)
         push!(ys, invs.s12)
         push!(ws, phase_space_weight(point))
@@ -97,8 +100,15 @@ function validate_threebody_flatness(points, masses, M; bins = 24)
     yedges = collect(range(dalitz_limits_s12(masses, M)...; length = bins + 1))
     weighted = hist2d_counts(xs, ys, xedges, yedges; weights = ws)
     fractions = [
-        bin_fraction(xedges[ix], xedges[ix + 1], yedges[iy], yedges[iy + 1], masses, M; subdivisions = 9)
-        for ix in 1:bins, iy in 1:bins
+        bin_fraction(
+            xedges[ix],
+            xedges[ix+1],
+            yedges[iy],
+            yedges[iy+1],
+            masses,
+            M;
+            subdivisions = 9,
+        ) for ix = 1:bins, iy = 1:bins
     ]
     interior = fractions .> 0.95
     weighted_stats = flatness_score(weighted[interior])

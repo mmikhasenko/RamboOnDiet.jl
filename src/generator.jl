@@ -1,11 +1,14 @@
 required_random_numbers(n::Integer) = 3 * n - 4
 
 function generate_point(rng::AbstractRNG, generator::PhaseSpaceGenerator{T,N}) where {T,N}
-    rs = SVector{required_random_numbers(N),T}(ntuple(_ -> rand(rng, T), Val(required_random_numbers(N))))
+    rs = SVector{required_random_numbers(N),T}(
+        ntuple(_ -> rand(rng, T), Val(required_random_numbers(N))),
+    )
     return generate_from_unit_hypercube(rs, generator)
 end
 
-generate_point(generator::PhaseSpaceGenerator) = generate_point(Random.default_rng(), generator)
+generate_point(generator::PhaseSpaceGenerator) =
+    generate_point(Random.default_rng(), generator)
 Base.rand(rng::AbstractRNG, generator::PhaseSpaceGenerator) = generate_point(rng, generator)
 Base.rand(generator::PhaseSpaceGenerator) = generate_point(generator)
 
@@ -23,10 +26,15 @@ function generate_point(rng::AbstractRNG, masses::AbstractVector{<:Real}, sqrt_s
     return generate_point(rng, generator)
 end
 
-generate_point(masses::AbstractVector{<:Real}, sqrt_s::Real) = generate_point(Random.default_rng(), masses, sqrt_s)
-generate_momenta(masses::AbstractVector{<:Real}, total::FourVector) = generate_momenta(Random.default_rng(), masses, total)
+generate_point(masses::AbstractVector{<:Real}, sqrt_s::Real) =
+    generate_point(Random.default_rng(), masses, sqrt_s)
+generate_momenta(masses::AbstractVector{<:Real}, total::FourVector) =
+    generate_momenta(Random.default_rng(), masses, total)
 
-function generate_from_unit_hypercube(rs::AbstractVector{<:Real}, generator::PhaseSpaceGenerator{T}) where {T}
+function generate_from_unit_hypercube(
+    rs::AbstractVector{<:Real},
+    generator::PhaseSpaceGenerator{T},
+) where {T}
     return generate_from_unit_hypercube(rs, generator.masses, generator.total)
 end
 
@@ -38,15 +46,16 @@ function generate_from_unit_hypercube(
     n = length(masses)
     n >= 2 || throw(ArgumentError("At least two outgoing particles are required."))
     length(rs) == required_random_numbers(n) || throw(
-        ArgumentError("Expected $(required_random_numbers(n)) random numbers for $n particles, got $(length(rs))."),
+        ArgumentError(
+            "Expected $(required_random_numbers(n)) random numbers for $n particles, got $(length(rs)).",
+        ),
     )
 
     massesT = T.(masses)
     Mtot = LorentzVectorBase.mass(total)
     total_mass = sum(massesT)
-    Mtot + sqrt(eps(T)) < total_mass && throw(
-        ArgumentError("Total invariant mass $Mtot is below threshold $total_mass."),
-    )
+    Mtot + sqrt(eps(T)) < total_mass &&
+        throw(ArgumentError("Total invariant mass $Mtot is below threshold $total_mass."))
 
     if isapprox(Mtot, total_mass; atol = sqrt(eps(T)), rtol = sqrt(eps(T)))
         return threshold_configuration(massesT, total)
@@ -54,7 +63,7 @@ function generate_from_unit_hypercube(
 
     tail_masses = similar(massesT)
     acc = zero(T)
-    for i in n:-1:1
+    for i = n:-1:1
         acc += massesT[i]
         tail_masses[i] = acc
     end
@@ -63,14 +72,15 @@ function generate_from_unit_hypercube(
     reduced_masses = Vector{T}(undef, n)
     cluster_masses[1] = Mtot
     reduced_masses[1] = Mtot - total_mass
-    reduced_masses[1] < zero(T) && throw(ArgumentError("Reduced mass is negative; kinematics are invalid."))
+    reduced_masses[1] < zero(T) &&
+        throw(ArgumentError("Reduced mass is negative; kinematics are invalid."))
 
     idx = 1
-    for i in 2:(n - 1)
+    for i = 2:(n-1)
         power = n - i
         u = solve_mass_parameter(T(rs[idx]), power)
         idx += 1
-        reduced_masses[i] = reduced_masses[i - 1] * sqrt(u)
+        reduced_masses[i] = reduced_masses[i-1] * sqrt(u)
         cluster_masses[i] = reduced_masses[i] + tail_masses[i]
     end
     cluster_masses[n] = massesT[n]
@@ -79,12 +89,12 @@ function generate_from_unit_hypercube(
     momenta = Vector{FourVector{T}}(undef, n)
     current_cluster = total
 
-    for i in 1:(n - 1)
+    for i = 1:(n-1)
         cosθ = T(2 * rs[idx] - 1)
-        ϕ = T(2π * rs[idx + 1])
+        ϕ = T(2π * rs[idx+1])
         idx += 2
 
-        child_mass = cluster_masses[i + 1]
+        child_mass = cluster_masses[i+1]
         q = breakup_momentum(cluster_masses[i], massesT[i], child_mass)
         direction = unit_direction(cosθ, ϕ)
         daughter_cm = fourvector(q * direction, sqrt(q^2 + massesT[i]^2))
@@ -101,12 +111,12 @@ function generate_from_unit_hypercube(
     end
 
     jacobian = one(T)
-    for i in 2:(n - 1)
+    for i = 2:(n-1)
         jacobian *= cluster_masses[i] / reduced_masses[i]
     end
-    for i in 2:n
-        jacobian *= two_body_density(cluster_masses[i - 1], massesT[i - 1], cluster_masses[i])
-        jacobian /= two_body_density(reduced_masses[i - 1], zero(T), reduced_masses[i])
+    for i = 2:n
+        jacobian *= two_body_density(cluster_masses[i-1], massesT[i-1], cluster_masses[i])
+        jacobian /= two_body_density(reduced_masses[i-1], zero(T), reduced_masses[i])
     end
 
     return PhaseSpacePoint(momenta, base_weight * jacobian)

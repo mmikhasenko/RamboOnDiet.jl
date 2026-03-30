@@ -1,4 +1,4 @@
-const Vec3{T} = SVector{3, T}
+const Vec3{T} = SVector{3,T}
 
 struct PhaseSpacePoint{T}
     momenta::Vector{FourVector{T}}
@@ -11,11 +11,8 @@ Base.iterate(point::PhaseSpacePoint, state...) = iterate(point.momenta, state...
 
 phase_space_weight(point::PhaseSpacePoint) = point.weight
 
-@inline spatial(p::FourVector{T}) where {T} = Vec3{T}(
-    LorentzVectorBase.px(p),
-    LorentzVectorBase.py(p),
-    LorentzVectorBase.pz(p),
-)
+@inline spatial(p::FourVector{T}) where {T} =
+    Vec3{T}(LorentzVectorBase.px(p), LorentzVectorBase.py(p), LorentzVectorBase.pz(p))
 
 @inline function fourvector(v::Vec3{T}, energy::T) where {T}
     return FourVector(v[1], v[2], v[3]; E = energy)
@@ -45,7 +42,9 @@ end
     threshold = (m1 + m2)^2
     upper = (m1 - m2)^2
     λ = (M^2 - threshold) * (M^2 - upper)
-    λ = λ < zero(λ) && !isapprox(λ, zero(λ); atol = sqrt(eps(real(float(M))))) ? λ : max(zero(λ), λ)
+    λ =
+        λ < zero(λ) && !isapprox(λ, zero(λ); atol = sqrt(eps(real(float(M))))) ? λ :
+        max(zero(λ), λ)
     return sqrt(λ) / (2 * M)
 end
 

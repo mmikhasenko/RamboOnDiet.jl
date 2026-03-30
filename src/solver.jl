@@ -9,7 +9,7 @@
     lo = zero(T)
     hi = one(T)
     u = clamp(v, T(1e-12), one(T) - T(1e-12))
-    for _ in 1:80
+    for _ = 1:80
         up = u^power
         f = (power + one(T)) * up - power * up * u - v
         abs(f) < T(32) * eps(T) && return clamp(u, lo, hi)
