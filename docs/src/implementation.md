@@ -23,8 +23,7 @@ The number of required random inputs is exposed as
 
 ## Data flow in `generate_from_unit_hypercube`
 
-The full deterministic map lives in
-[`src/generator.jl`](/Users/mikhailmikhasenko/Documents/JuliaDev.CAT/PhaseSpaceRembo/src/generator.jl).
+The full deterministic map lives in `src/generator.jl`.
 Given a vector `rs` of length `3n - 4`, the function:
 
 1. checks multiplicity and threshold,
@@ -56,7 +55,7 @@ This is the massive deformation of the massless chain. In the massless limit,
 
 ## Solving for `u`
 
-The helper [`solve_mass_parameter`](/Users/mikhailmikhasenko/Documents/JuliaDev.CAT/PhaseSpaceRembo/src/solver.jl)
+The helper `solve_mass_parameter` in `src/solver.jl`
 implements the one-dimensional inverse map from a uniform random number `v` to the
 flattening variable `u`. It uses a safeguarded Newton iteration:
 
@@ -76,7 +75,7 @@ The code does not construct explicit rotation matrices. Instead it generates a u
 (\sin\theta\cos\phi,\ \sin\theta\sin\phi,\ \cos\theta)
 ```
 
-through the helper `unit_direction` in [src/kinematics.jl](/Users/mikhailmikhasenko/Documents/JuliaDev.CAT/PhaseSpaceRembo/src/kinematics.jl). In the cluster rest frame, this is equivalent to taking
+through the helper `unit_direction` in `src/kinematics.jl`. In the cluster rest frame, this is equivalent to taking
 a reference momentum on the `z` axis and rotating it by the polar and azimuthal angles.
 
 This direct construction keeps the implementation short and avoids carrying rotation
@@ -84,7 +83,7 @@ objects around.
 
 ## Boosts
 
-The function `boost` in [src/kinematics.jl](/Users/mikhailmikhasenko/Documents/JuliaDev.CAT/PhaseSpaceRembo/src/kinematics.jl) implements a Lorentz boost defined by the parent four-vector.
+The function `boost` in `src/kinematics.jl` implements a Lorentz boost defined by the parent four-vector.
 If `Q` is the current cluster and `p` is a daughter built in the `Q` rest frame, the code
 extracts
 

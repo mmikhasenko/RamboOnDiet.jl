@@ -156,8 +156,7 @@ with the two-body density
 \rho_2(M; m_a, m_b) = \frac{q(M; m_a, m_b)}{4M}.
 ```
 
-In [src/generator.jl](/Users/mikhailmikhasenko/Documents/JuliaDev.CAT/PhaseSpaceRembo/src/generator.jl),
-this factorization appears as two explicit products: one loop over `i = 2:(n - 1)`
+In `src/generator.jl`, this factorization appears as two explicit products: one loop over `i = 2:(n - 1)`
 for the `M_i / \mu_i` terms and one loop over `i = 2:n` for the ratio of massive to
 massless two-body densities.
 
