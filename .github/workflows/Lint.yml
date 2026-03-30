@@ -37,13 +37,22 @@ jobs:
             ${{ runner.os }}-julia-lint-
             ${{ runner.os }}-julia-
 
-      - name: Check formatting
+      - name: Install JuliaFormatter
         run: |
           using Pkg
-          Pkg.add(name = "JuliaFormatter", uuid = "98e50ef6-ec3c-48c1-b100-5d4f298c2d73")
-          using JuliaFormatter
-          format(".") || error("JuliaFormatter found formatting differences.")
+          ENV["JULIA_PKG_SERVER"] = ""
+          Pkg.Registry.add("General")
+          Pkg.add("JuliaFormatter")
         shell: julia --color=yes --project=. {0}
+
+      - name: Check formatting
+        run: |
+          using JuliaFormatter
+          format(".")
+        shell: julia --color=yes --project=. {0}
+
+      - name: Fail on formatting drift
+        run: git diff --exit-code
 
   links:
     name: Link checker
@@ -55,3 +64,9 @@ jobs:
         uses: lycheeverse/lychee-action@v2
         with:
           fail: true
+          args: >
+            --verbose
+            --no-progress
+            --exclude '/Users/mikhailmikhasenko/Documents/JuliaDev.CAT/PhaseSpaceRembo/'
+            --exclude 'https://mmikhasenko.github.io/RamboOnDiet.jl/'
+            './**/*.md'
