@@ -1,7 +1,7 @@
 name = "RemboOnDiet"
 uuid = "1cb55d97-0cb4-4390-8d6a-9cd22df9b4c4"
-authors = ["OpenAI Codex", "Misha Mikhasenko <mikhail.mikhasenko@gmail.com>"]
 version = "0.1.0"
+authors = ["OpenAI Codex", "Misha Mikhasenko <mikhail.mikhasenko@gmail.com>"]
 
 [deps]
 FourVectors = "b122eb78-8380-428a-b8c8-584a022ae8b6"
@@ -10,7 +10,11 @@ LorentzVectorBase = "592a752d-6533-4762-a71b-738712ea30ec"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
+[sources.FourVectors]
+url = "https://github.com/mmikhasenko/FourVectors.jl"
+
 [compat]
+LorentzVectorBase = "0.1"
 StaticArrays = "1"
 julia = "1.10"
 
@@ -21,6 +25,3 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
 test = ["FHist", "Statistics", "Test"]
-
-[sources]
-FourVectors = {url = "https://github.com/mmikhasenko/FourVectors.jl"}
