@@ -2,7 +2,7 @@
 
 julia_version = "1.11.5"
 manifest_format = "2.0"
-project_hash = "b67d2d90ba4bb6061fac713face721d43d4b2715"
+project_hash = "20afcc341c46557008a422deac174a7059e23a9c"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -246,13 +246,10 @@ uuid = "1fa38f19-a742-5d3f-a2b9-30dd87b9d5f8"
 version = "1.3.7"
 
 [[deps.FourVectors]]
-deps = ["LinearAlgebra", "LorentzVectorBase", "Parameters", "StaticArrays"]
-git-tree-sha1 = "0ce8f0d419dcac15ba9e261c088292a1f6f6fe0e"
-path = "../../FourVectors.jl"
-repo-rev = "main"
-repo-url = "https://github.com/mmikhasenko/FourVectors.jl"
+deps = ["LinearAlgebra", "LorentzVectorBase", "StaticArrays"]
+git-tree-sha1 = "620a9a82a07a0461134355054b4271b1e1b94bff"
 uuid = "b122eb78-8380-428a-b8c8-584a022ae8b6"
-version = "0.3.1"
+version = "0.3.4"
 
 [[deps.FreeType2_jll]]
 deps = ["Artifacts", "Bzip2_jll", "JLLWrappers", "Libdl", "Zlib_jll"]

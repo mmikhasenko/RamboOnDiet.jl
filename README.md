@@ -16,13 +16,11 @@ validated using `ThreeBodyDecays.jl`, and reviewed by a human.
 
 ```julia
 using Pkg
-Pkg.add(url = "https://github.com/mmikhasenko/FourVectors.jl")
 Pkg.add(url = "https://github.com/mmikhasenko/RamboOnDiet.jl")
 ```
 
-`FourVectors.jl` is currently unregistered. If you are working with a Julia
-version different from the one used by the checked-in manifests in this
-repository, install `FourVectors.jl` explicitly before `RemboOnDiet.jl`.
+`FourVectors.jl` is registered in General and is resolved automatically as a
+dependency.
 
 ## Docs
 
