@@ -19,8 +19,8 @@ using Pkg
 Pkg.add(url = "https://github.com/mmikhasenko/RamboOnDiet.jl")
 ```
 
-Dependencies such as [`FourVectors.jl`](https://github.com/JuliaRegistries/General/blob/master/F/FourVectors/Package.toml)
-and [`ThreeBodyDecays.jl`](https://github.com/JuliaRegistries/General/blob/master/T/ThreeBodyDecays/Package.toml)
+Dependencies such as [`FourVectors.jl`](https://github.com/mmikhasenko/FourVectors.jl)
+and [`ThreeBodyDecays.jl`](https://github.com/mmikhasenko/ThreeBodyDecays.jl)
 are registered in General and resolved automatically.
 
 ## Docs
