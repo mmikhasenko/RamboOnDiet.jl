@@ -15,7 +15,6 @@ ThreeBodyDecays = "e6563dab-9ca1-5843-bde3-2ccf38d63843"
 
 [sources]
 RemboOnDiet = {path = ".."}
-ThreeBodyDecays = {url = "https://github.com/mmikhasenko/ThreeBodyDecays.jl"}
 
 [compat]
 DataFrames = "1"
@@ -23,5 +22,5 @@ Documenter = "1"
 FourVectors = "0.3.4"
 Literate = "2"
 Plots = "1"
-ThreeBodyDecays = "0.13"
+ThreeBodyDecays = "0.14"
 julia = "1.10"
