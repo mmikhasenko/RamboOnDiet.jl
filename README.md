@@ -19,8 +19,9 @@ using Pkg
 Pkg.add(url = "https://github.com/mmikhasenko/RamboOnDiet.jl")
 ```
 
-`FourVectors.jl` is registered in General and is resolved automatically as a
-dependency.
+Dependencies such as [`FourVectors.jl`](https://github.com/JuliaRegistries/General/blob/master/F/FourVectors/Package.toml)
+and [`ThreeBodyDecays.jl`](https://github.com/JuliaRegistries/General/blob/master/T/ThreeBodyDecays/Package.toml)
+are registered in General and resolved automatically.
 
 ## Docs
 
@@ -31,6 +32,7 @@ dependency.
 To build the rendered docs locally, run:
 
 ```bash
+julia --project=docs -e 'using Pkg; Pkg.instantiate()'
 julia --project=docs docs/make.jl
 ```
 
