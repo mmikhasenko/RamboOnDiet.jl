@@ -19,7 +19,7 @@ using Pkg
 Pkg.add(url = "https://github.com/mmikhasenko/RamboOnDiet.jl")
 ```
 
-Dependencies such as [`FourVectors.jl`](https://github.com/mmikhasenko/FourVectors.jl)
+Dependencies such as [`FourVectors.jl`](https://github.com/JuliaHEP/FourVectors.jl)
 and [`ThreeBodyDecays.jl`](https://github.com/mmikhasenko/ThreeBodyDecays.jl)
 are registered in General and resolved automatically.
 
