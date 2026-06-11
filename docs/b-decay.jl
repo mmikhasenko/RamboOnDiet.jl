@@ -39,8 +39,13 @@ const masses = (
 )
 
 three_body_masses = [masses.Dst, masses.Dp, masses.Kp]
-dst_weight =
-    two_body_phase_space_weight(FourVector(0, 0, 0; E = masses.Dst), masses.D0, masses.pip)
+dst_weight = phase_space_weight(
+    generate_momenta(
+        MersenneTwister(0),
+        [masses.D0, masses.pip],
+        FourVector(0, 0, 0; E = masses.Dst),
+    ),
+)
 
 # ## Generate `100_000` events
 

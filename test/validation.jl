@@ -19,10 +19,10 @@ end
 
 function kibble(invs, masses, M)
     msq = (masses .^ 2)..., M^2
-    return kallen(
-        kallen(msq[4], msq[1], invs.s23),
-        kallen(msq[4], msq[2], invs.s31),
-        kallen(msq[4], msq[3], invs.s12),
+    return RemboOnDiet.kallen(
+        RemboOnDiet.kallen(msq[4], msq[1], invs.s23),
+        RemboOnDiet.kallen(msq[4], msq[2], invs.s31),
+        RemboOnDiet.kallen(msq[4], msq[3], invs.s12),
     )
 end
 

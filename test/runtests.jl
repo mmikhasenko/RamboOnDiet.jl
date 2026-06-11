@@ -40,7 +40,7 @@ const JULIA_SEED = 20260329
                 @test std(weights) / mean(weights) < 1e-12
             else
                 point = generate_point(rng, zeros(n), sqrt_s)
-                expected = float(massless_phase_space_volume(sqrt_s^2, n))
+                expected = float(RemboOnDiet.massless_phase_space_volume(sqrt_s^2, n))
                 @test phase_space_weight(point) ≈ expected rtol = 1e-12
             end
         end
@@ -78,20 +78,20 @@ const JULIA_SEED = 20260329
             generate_from_unit_hypercube([(cosθ + 1) / 2, ϕ / (2π)], masses, total)
         @test sampler_point.momenta[1] ≈ p1 atol = 5e-11 rtol = 5e-11
         @test sampler_point.momenta[2] ≈ p2 atol = 5e-11 rtol = 5e-11
-        @test two_body_phase_space_weight(total, masses...) ≈
+        @test RemboOnDiet.two_body_phase_space_weight(total, masses...) ≈
               phase_space_weight(sampler_point) atol = 5e-11 rtol = 5e-11
 
         for _ = 1:200
             point = generate_momenta(rng, masses, total)
-            p1_cm = parent_rest_frame(point[1], total)
+            p1_cm = RemboOnDiet.parent_rest_frame(point[1], total)
             p_mag = LorentzVectorBase.spatial_magnitude(p1_cm)
             cosθ_i = LorentzVectorBase.pz(p1_cm) / p_mag
             ϕ_i = atan(LorentzVectorBase.py(p1_cm), LorentzVectorBase.px(p1_cm))
             analytic = decay_two_body(total, masses..., cosθ_i, ϕ_i)
             @test analytic[1] ≈ point[1] atol = 5e-11 rtol = 5e-11
             @test analytic[2] ≈ point[2] atol = 5e-11 rtol = 5e-11
-            @test two_body_phase_space_weight(total, masses...) ≈ phase_space_weight(point) atol =
-                5e-11 rtol = 5e-11
+            @test RemboOnDiet.two_body_phase_space_weight(total, masses...) ≈
+                  phase_space_weight(point) atol = 5e-11 rtol = 5e-11
         end
     end
 
