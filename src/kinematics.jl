@@ -52,6 +52,16 @@ end
     return breakup_momentum(M, m1, m2) / (4 * M)
 end
 
+@inline function two_body_jacobian_ratio(M, m1, m2, μ_parent, μ_child)
+    T = promote_type(typeof(M), typeof(m1), typeof(m2), typeof(μ_parent), typeof(μ_child))
+    M = T(M)
+    m1 = T(m1)
+    m2 = T(m2)
+    μ_parent = T(μ_parent)
+    μ_child = T(μ_child)
+    return two_body_density(M, m1, m2) / two_body_density(μ_parent, zero(T), μ_child)
+end
+
 @inline function massless_phase_space_volume(s, n::Integer)
     return (π / 2)^(n - 1) * s^(n - 2) / (factorial(big(n - 1)) * factorial(big(n - 2)))
 end
@@ -79,6 +89,62 @@ end
     sinθ = sqrt(max(zero(T), one(T) - cosθ^2))
     sinϕ, cosϕ = sincos(ϕ)
     return Vec3{T}(sinθ * cosϕ, sinθ * sinϕ, cosθ)
+end
+
+function _check_two_body_threshold(M, m1, m2)
+    M + sqrt(eps(real(float(M)))) < m1 + m2 &&
+        throw(ArgumentError("Parent mass $M is below two-body threshold $(m1 + m2)."))
+    return nothing
+end
+
+# Inverse boost used by `decay_two_body` and the package tests.
+function parent_rest_frame(p::FourVector{T}, parent::FourVector{T}) where {T}
+    parent_at_rest = fourvector(-spatial(parent), LorentzVectorBase.E(parent))
+    return boost(p, parent_at_rest)
+end
+
+"""
+    decay_two_body(parent, m1, m2, cosθ, ϕ)
+
+Analytically decay `parent` into two on-shell daughters with masses `m1` and `m2`.
+
+In the parent rest frame, the first daughter is emitted along
+`+û(cosθ, ϕ)` and the second along the opposite direction. Both four-vectors are
+then boosted into the frame of `parent`.
+
+For the matching phase-space weight, sample with `generate_momenta` or read
+`phase_space_weight` from the returned `PhaseSpacePoint`.
+"""
+function decay_two_body(parent::FourVector{T}, m1, m2, cosθ::T, ϕ::T) where {T}
+    m1T = T(m1)
+    m2T = T(m2)
+    M = LorentzVectorBase.mass(parent)
+    _check_two_body_threshold(M, m1T, m2T)
+
+    q = breakup_momentum(M, m1T, m2T)
+    direction = unit_direction(cosθ, ϕ)
+    daughter_cm = fourvector(q * direction, sqrt(q^2 + m1T^2))
+    sibling_cm = fourvector(-q * direction, sqrt(q^2 + m2T^2))
+    return boost(daughter_cm, parent), boost(sibling_cm, parent)
+end
+
+# Two-body phase-space weight used by the main sampler for `n = 2`.
+function two_body_phase_space_weight(parent::FourVector{T}, m1, m2) where {T}
+    m1T = T(m1)
+    m2T = T(m2)
+    M = LorentzVectorBase.mass(parent)
+    _check_two_body_threshold(M, m1T, m2T)
+
+    if isapprox(M, m1T + m2T; atol = sqrt(eps(T)), rtol = sqrt(eps(T)))
+        return zero(T)
+    end
+
+    reduced_mass = M - m1T - m2T
+    reduced_mass < zero(T) &&
+        throw(ArgumentError("Reduced mass is negative; kinematics are invalid."))
+
+    base_weight = T(massless_phase_space_volume(M^2, 2))
+    return base_weight * two_body_jacobian_ratio(M, m1T, m2T, reduced_mass, zero(T))
 end
 
 function mandelstam(momenta, i::Int, j::Int)

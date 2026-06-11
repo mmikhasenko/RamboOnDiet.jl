@@ -10,12 +10,14 @@ const LITERATE_OUTPUT = joinpath(DOCS_ROOT, "src", "generated")
 
 mkpath(LITERATE_OUTPUT)
 
-Literate.markdown(
-    joinpath(DOCS_ROOT, "three-body.jl"),
-    LITERATE_OUTPUT;
-    documenter = true,
-    flavor = Literate.DocumenterFlavor(),
-)
+for tutorial in ("three-body.jl", "b-decay.jl")
+    Literate.markdown(
+        joinpath(DOCS_ROOT, tutorial),
+        LITERATE_OUTPUT;
+        documenter = true,
+        flavor = Literate.DocumenterFlavor(),
+    )
+end
 
 makedocs(
     sitename = "RemboOnDiet",
@@ -29,5 +31,6 @@ makedocs(
         "Algorithm" => "algorithm.md",
         "Implementation" => "implementation.md",
         "Three-Body Tutorial" => "generated/three-body.md",
+        "B Decay Tutorial" => "generated/b-decay.md",
     ],
 )

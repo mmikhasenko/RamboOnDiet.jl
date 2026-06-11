@@ -1,4 +1,5 @@
 docs/build/
+docs/generated/*.arrow
 Manifest.toml
 docs/Manifest.toml
 .DS_Store

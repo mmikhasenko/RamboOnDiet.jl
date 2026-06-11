@@ -78,6 +78,14 @@ The code does not construct explicit rotation matrices. Instead it generates a u
 through the helper `unit_direction` in `src/kinematics.jl`. In the cluster rest frame, this is equivalent to taking
 a reference momentum on the `z` axis and rotating it by the polar and azimuthal angles.
 
+The same map is exposed as `decay_two_body(parent, m1, m2, cosθ, ϕ)` for cascade
+workflows that need explicit angles. The main generator calls this helper for every
+sequential decay step. Two-body weights and inverse boosts remain internal helpers.
+
+```@docs
+decay_two_body
+```
+
 This direct construction keeps the implementation short and avoids carrying rotation
 objects around.
 

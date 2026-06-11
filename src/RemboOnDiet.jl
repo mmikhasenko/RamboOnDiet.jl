@@ -14,11 +14,8 @@ export generate_from_unit_hypercube
 export required_random_numbers
 export phase_space_weight
 export total_momentum
-export mandelstam
 export invariant_masses
-export breakup_momentum
-export kallen
-export massless_phase_space_volume
+export decay_two_body
 
 include("kinematics.jl")
 include("solver.jl")
