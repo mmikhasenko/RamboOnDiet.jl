@@ -37,7 +37,12 @@ phase_space_weight(point)
 - `total_momentum(point.momenta)`
 
 ```@contents
-Pages = ["algorithm.md", "implementation.md", "generated/three-body.md"]
+Pages = [
+    "algorithm.md",
+    "implementation.md",
+    "generated/three-body.md",
+    "generated/b-decay.md",
+]
 Depth = 2
 ```
 
@@ -46,3 +51,4 @@ Depth = 2
 - [Algorithm overview](algorithm.md)
 - [Implementation details](implementation.md)
 - [Three-body generation and Dalitz processing](generated/three-body.md)
+- [Cascade decay and Arrow export (`B^+ \to D^{*+} D^- K^+`)](generated/b-decay.md)

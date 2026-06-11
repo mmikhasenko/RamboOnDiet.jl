@@ -28,6 +28,7 @@ are registered in General and resolved automatically.
 - [Documentation website](https://mmikhasenko.github.io/RamboOnDiet.jl/)
 - [Documentation overview](docs/src/index.md)
 - [Three-body tutorial](docs/src/generated/three-body.md)
+- [B decay cascade and Arrow export](docs/src/generated/b-decay.md)
 
 To build the rendered docs locally, run:
 

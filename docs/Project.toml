@@ -4,6 +4,7 @@ authors = ["OpenAI Codex"]
 version = "0.1.0"
 
 [deps]
+Arrow = "69666777-d1a9-59fb-9406-91d4454c9d45"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 FourVectors = "b122eb78-8380-428a-b8c8-584a022ae8b6"
@@ -17,6 +18,7 @@ ThreeBodyDecays = "e6563dab-9ca1-5843-bde3-2ccf38d63843"
 RemboOnDiet = {path = ".."}
 
 [compat]
+Arrow = "2"
 DataFrames = "1"
 Documenter = "1"
 FourVectors = "0.3.4"
