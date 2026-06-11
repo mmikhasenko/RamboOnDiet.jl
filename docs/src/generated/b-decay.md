@@ -78,15 +78,6 @@ function four_momentum_from_row(row, prefix::AbstractString)
     )
 end
 
-function momentum_row(prefix::AbstractString, p::FourVector)
-    return (
-        Symbol(prefix * "_px") => LorentzVectorBase.px(p),
-        Symbol(prefix * "_py") => LorentzVectorBase.py(p),
-        Symbol(prefix * "_pz") => LorentzVectorBase.pz(p),
-        Symbol(prefix * "_E") => LorentzVectorBase.E(p),
-    )
-end
-
 function cascade_event(rng::AbstractRNG)
     three_body = rand(rng, PhaseSpaceGenerator(three_body_masses, masses.Bp))
     p_Dst, p_Dm, p_Kp = three_body.momenta
@@ -97,29 +88,34 @@ function cascade_event(rng::AbstractRNG)
     p_D0, p_pip = decay_two_body(p_Dst, masses.D0, masses.pip, cosθ, ϕ)
     weight_dst = two_body_phase_space_weight(p_Dst, masses.D0, masses.pip)
 
-    row = NamedTuple()
-    for (name, p) in (
-        (:D0, p_D0),
-        (:pip, p_pip),
-        (:Dm, p_Dm),
-        (:Kp, p_Kp),
-    )
-        row = merge(row, momentum_row(string(name), p))
-    end
-
-    return merge(
-        row,
-        (
-            weight_3body = weight_3body,
-            weight_dst = weight_dst,
-            weight = weight_3body * weight_dst,
-        ),
+    return (
+        D0_px = LorentzVectorBase.px(p_D0),
+        D0_py = LorentzVectorBase.py(p_D0),
+        D0_pz = LorentzVectorBase.pz(p_D0),
+        D0_E = LorentzVectorBase.E(p_D0),
+        pip_px = LorentzVectorBase.px(p_pip),
+        pip_py = LorentzVectorBase.py(p_pip),
+        pip_pz = LorentzVectorBase.pz(p_pip),
+        pip_E = LorentzVectorBase.E(p_pip),
+        Dm_px = LorentzVectorBase.px(p_Dm),
+        Dm_py = LorentzVectorBase.py(p_Dm),
+        Dm_pz = LorentzVectorBase.pz(p_Dm),
+        Dm_E = LorentzVectorBase.E(p_Dm),
+        Kp_px = LorentzVectorBase.px(p_Kp),
+        Kp_py = LorentzVectorBase.py(p_Kp),
+        Kp_pz = LorentzVectorBase.pz(p_Kp),
+        Kp_E = LorentzVectorBase.E(p_Kp),
+        weight_3body = weight_3body,
+        weight_dst = weight_dst,
+        weight = weight_3body * weight_dst,
     )
 end
 
 function generate_events(rng::AbstractRNG, n_events::Integer)
-    rows = Vector{NamedTuple}(undef, n_events)
-    for i = 1:n_events
+    first_event = cascade_event(rng)
+    rows = Vector{typeof(first_event)}(undef, n_events)
+    rows[1] = first_event
+    for i = 2:n_events
         rows[i] = cascade_event(rng)
     end
     return DataFrame(rows)
@@ -133,12 +129,12 @@ function validate_kinematics(df::DataFrame; atol = 1e-9)
         p_Dm = four_momentum_from_row(row, "Dm")
         p_Kp = four_momentum_from_row(row, "Kp")
 
-        p_Dst = total_momentum([p_D0, p_pip])
-        p_total = total_momentum([p_D0, p_pip, p_Dm, p_Kp])
+        p_Dst = total_momentum((p_D0, p_pip))
+        p_total = total_momentum((p_D0, p_pip, p_Dm, p_Kp))
 
         @assert isapprox(LorentzVectorBase.mass(p_Dst), masses.Dst; atol, rtol = atol)
         @assert isapprox(LorentzVectorBase.mass(p_total), masses.Bp; atol, rtol = atol)
-        @assert isapprox(total_momentum([p_Dst, p_Dm, p_Kp]), p_B; atol, rtol = atol)
+        @assert isapprox(total_momentum((p_Dst, p_Dm, p_Kp)), p_B; atol, rtol = atol)
         @assert isapprox(p_total, p_B; atol, rtol = atol)
     end
     return nothing
@@ -148,11 +144,14 @@ dalitz_limits_s23(m, M) = ((m[2] + m[3])^2, (M - m[1])^2)
 dalitz_limits_s12(m, M) = ((m[1] + m[2])^2, (M - m[3])^2)
 
 function dalitz_kibble(invs, m, M)
-    msq = (m .^ 2)..., M^2
+    m1sq = m[1]^2
+    m2sq = m[2]^2
+    m3sq = m[3]^2
+    Msq = M^2
     return kallen(
-        kallen(msq[4], msq[1], invs.s23),
-        kallen(msq[4], msq[2], invs.s31),
-        kallen(msq[4], msq[3], invs.s12),
+        kallen(Msq, m1sq, invs.s23),
+        kallen(Msq, m2sq, invs.s31),
+        kallen(Msq, m3sq, invs.s12),
     )
 end
 
@@ -222,9 +221,9 @@ function validate_importance_sampling(df::DataFrame; bins = 24)
         p_pip = four_momentum_from_row(row, "pip")
         p_Dm = four_momentum_from_row(row, "Dm")
         p_Kp = four_momentum_from_row(row, "Kp")
-        p_Dst = total_momentum([p_D0, p_pip])
+        p_Dst = total_momentum((p_D0, p_pip))
 
-        invs = invariant_masses([p_Dst, p_Dm, p_Kp])
+        invs = invariant_masses((p_Dst, p_Dm, p_Kp))
         push!(s23, invs.s23)
         push!(s12, invs.s12)
 
@@ -326,7 +325,7 @@ nrow(reloaded)
 function m2_Dm_Kp(row)
     p_Dm = four_momentum_from_row(row, "Dm")
     p_Kp = four_momentum_from_row(row, "Kp")
-    return LorentzVectorBase.mass2(total_momentum([p_Dm, p_Kp]))
+    return LorentzVectorBase.mass2(total_momentum((p_Dm, p_Kp)))
 end
 
 observable = m2_Dm_Kp.(eachrow(reloaded))

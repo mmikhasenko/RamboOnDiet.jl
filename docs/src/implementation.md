@@ -79,8 +79,10 @@ through the helper `unit_direction` in `src/kinematics.jl`. In the cluster rest 
 a reference momentum on the `z` axis and rotating it by the polar and azimuthal angles.
 
 The same map is exposed directly as `decay_two_body(parent, m1, m2, cosθ, ϕ)` in
-`src/kinematics.jl`. The main generator calls this helper for every sequential decay step,
-and `two_body_phase_space_weight(parent, m1, m2)` returns the matching event weight.
+`src/kinematics.jl`. The main generator calls this helper for every sequential decay step.
+For `n = 2`, `generate_from_unit_hypercube` returns
+`two_body_phase_space_weight(parent, m1, m2)` directly. For larger `n`, each Jacobian
+factor reuses the internal ratio `two_body_jacobian_ratio`.
 `parent_rest_frame(p, parent)` applies the inverse boost used by that convention.
 
 ```@docs

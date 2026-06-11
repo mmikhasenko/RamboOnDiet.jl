@@ -52,6 +52,16 @@ end
     return breakup_momentum(M, m1, m2) / (4 * M)
 end
 
+@inline function two_body_jacobian_ratio(M, m1, m2, μ_parent, μ_child)
+    T = promote_type(typeof(M), typeof(m1), typeof(m2), typeof(μ_parent), typeof(μ_child))
+    M = T(M)
+    m1 = T(m1)
+    m2 = T(m2)
+    μ_parent = T(μ_parent)
+    μ_child = T(μ_child)
+    return two_body_density(M, m1, m2) / two_body_density(μ_parent, zero(T), μ_child)
+end
+
 @inline function massless_phase_space_volume(s, n::Integer)
     return (π / 2)^(n - 1) * s^(n - 2) / (factorial(big(n - 1)) * factorial(big(n - 2)))
 end
@@ -142,10 +152,7 @@ function two_body_phase_space_weight(parent::FourVector{T}, m1, m2) where {T}
         throw(ArgumentError("Reduced mass is negative; kinematics are invalid."))
 
     base_weight = T(massless_phase_space_volume(M^2, 2))
-    jacobian =
-        two_body_density(M, m1T, m2T) /
-        two_body_density(reduced_mass, zero(T), zero(T))
-    return base_weight * jacobian
+    return base_weight * two_body_jacobian_ratio(M, m1T, m2T, reduced_mass, zero(T))
 end
 
 function mandelstam(momenta, i::Int, j::Int)

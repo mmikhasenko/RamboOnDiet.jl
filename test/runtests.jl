@@ -66,13 +66,20 @@ const JULIA_SEED = 20260329
         ϕ = 1.1
 
         p1, p2 = decay_two_body(total, masses[1], masses[2], cosθ, ϕ)
-        validate_point(PhaseSpacePoint([p1, p2], 0.0), masses, total; atol = 5e-11, rtol = 5e-11)
+        validate_point(
+            PhaseSpacePoint([p1, p2], 0.0),
+            masses,
+            total;
+            atol = 5e-11,
+            rtol = 5e-11,
+        )
 
-        sampler_point = generate_from_unit_hypercube([(cosθ + 1) / 2, ϕ / (2π)], masses, total)
+        sampler_point =
+            generate_from_unit_hypercube([(cosθ + 1) / 2, ϕ / (2π)], masses, total)
         @test sampler_point.momenta[1] ≈ p1 atol = 5e-11 rtol = 5e-11
         @test sampler_point.momenta[2] ≈ p2 atol = 5e-11 rtol = 5e-11
-        @test two_body_phase_space_weight(total, masses...) ≈ phase_space_weight(sampler_point) atol =
-            5e-11 rtol = 5e-11
+        @test two_body_phase_space_weight(total, masses...) ≈
+              phase_space_weight(sampler_point) atol = 5e-11 rtol = 5e-11
 
         for _ = 1:200
             point = generate_momenta(rng, masses, total)

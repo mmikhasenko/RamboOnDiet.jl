@@ -61,6 +61,19 @@ function generate_from_unit_hypercube(
         return threshold_configuration(massesT, total)
     end
 
+    if n == 2
+        cosθ = T(2 * rs[1] - 1)
+        ϕ = T(2π * rs[2])
+        momenta = Vector{FourVector{T}}(undef, 2)
+        momenta[1], momenta[2] = decay_two_body(total, massesT[1], massesT[2], cosθ, ϕ)
+        weight = if all(iszero, massesT)
+            T(massless_phase_space_volume(Mtot^2, 2))
+        else
+            two_body_phase_space_weight(total, massesT[1], massesT[2])
+        end
+        return PhaseSpacePoint(momenta, weight)
+    end
+
     tail_masses = similar(massesT)
     acc = zero(T)
     for i = n:-1:1
@@ -95,13 +108,8 @@ function generate_from_unit_hypercube(
         idx += 2
 
         child_mass = cluster_masses[i+1]
-        momenta[i], child_cluster = decay_two_body(
-            current_cluster,
-            massesT[i],
-            child_mass,
-            cosθ,
-            ϕ,
-        )
+        momenta[i], child_cluster =
+            decay_two_body(current_cluster, massesT[i], child_mass, cosθ, ϕ)
         current_cluster = child_cluster
     end
     momenta[n] = current_cluster
@@ -116,8 +124,13 @@ function generate_from_unit_hypercube(
         jacobian *= cluster_masses[i] / reduced_masses[i]
     end
     for i = 2:n
-        jacobian *= two_body_density(cluster_masses[i-1], massesT[i-1], cluster_masses[i])
-        jacobian /= two_body_density(reduced_masses[i-1], zero(T), reduced_masses[i])
+        jacobian *= two_body_jacobian_ratio(
+            cluster_masses[i-1],
+            massesT[i-1],
+            cluster_masses[i],
+            reduced_masses[i-1],
+            reduced_masses[i],
+        )
     end
 
     return PhaseSpacePoint(momenta, base_weight * jacobian)
