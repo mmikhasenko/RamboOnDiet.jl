@@ -95,13 +95,14 @@ function generate_from_unit_hypercube(
         idx += 2
 
         child_mass = cluster_masses[i+1]
-        q = breakup_momentum(cluster_masses[i], massesT[i], child_mass)
-        direction = unit_direction(cosθ, ϕ)
-        daughter_cm = fourvector(q * direction, sqrt(q^2 + massesT[i]^2))
-        child_cm = fourvector(-q * direction, sqrt(q^2 + child_mass^2))
-
-        momenta[i] = boost(daughter_cm, current_cluster)
-        current_cluster = boost(child_cm, current_cluster)
+        momenta[i], child_cluster = decay_two_body(
+            current_cluster,
+            massesT[i],
+            child_mass,
+            cosθ,
+            ϕ,
+        )
+        current_cluster = child_cluster
     end
     momenta[n] = current_cluster
 

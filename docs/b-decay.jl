@@ -80,9 +80,10 @@ function cascade_event(rng::AbstractRNG)
     p_Dst, p_Dm, p_Kp = three_body.momenta
     weight_3body = phase_space_weight(three_body)
 
-    dst_decay = generate_momenta(rng, dst_daughters, p_Dst)
-    p_D0, p_pip = dst_decay.momenta
-    weight_dst = phase_space_weight(dst_decay)
+    cosθ = 2 * rand(rng) - 1
+    ϕ = 2π * rand(rng)
+    p_D0, p_pip = decay_two_body(p_Dst, masses.D0, masses.pip, cosθ, ϕ)
+    weight_dst = two_body_phase_space_weight(p_Dst, masses.D0, masses.pip)
 
     row = NamedTuple()
     for (name, p) in (
@@ -215,7 +216,7 @@ function validate_importance_sampling(df::DataFrame; bins = 24)
         push!(s23, invs.s23)
         push!(s12, invs.s12)
 
-        p_D0_dst = transform_to_cmf(p_D0, p_Dst)
+        p_D0_dst = parent_rest_frame(p_D0, p_Dst)
         p_mag = LorentzVectorBase.spatial_magnitude(p_D0_dst)
         push!(cosθ_dst, LorentzVectorBase.pz(p_D0_dst) / p_mag)
     end

@@ -1,7 +1,7 @@
 using Test
 using Random
 using RemboOnDiet
-using FourVectors
+using FourVectors: FourVector
 using LorentzVectorBase
 using StaticArrays
 
@@ -56,6 +56,35 @@ const JULIA_SEED = 20260329
                 validate_point(point, masses, total; atol = 5e-11, rtol = 5e-11)
                 @test phase_space_weight(point) ≥ 0
             end
+        end
+    end
+
+    @testset "Analytic two-body decay" begin
+        masses = [0.7, 1.1]
+        total = FourVector(0.2, -0.1, 0.4; E = sqrt(4.2^2 + 0.2^2 + 0.1^2 + 0.4^2))
+        cosθ = 0.35
+        ϕ = 1.1
+
+        p1, p2 = decay_two_body(total, masses[1], masses[2], cosθ, ϕ)
+        validate_point(PhaseSpacePoint([p1, p2], 0.0), masses, total; atol = 5e-11, rtol = 5e-11)
+
+        sampler_point = generate_from_unit_hypercube([(cosθ + 1) / 2, ϕ / (2π)], masses, total)
+        @test sampler_point.momenta[1] ≈ p1 atol = 5e-11 rtol = 5e-11
+        @test sampler_point.momenta[2] ≈ p2 atol = 5e-11 rtol = 5e-11
+        @test two_body_phase_space_weight(total, masses...) ≈ phase_space_weight(sampler_point) atol =
+            5e-11 rtol = 5e-11
+
+        for _ = 1:200
+            point = generate_momenta(rng, masses, total)
+            p1_cm = parent_rest_frame(point[1], total)
+            p_mag = LorentzVectorBase.spatial_magnitude(p1_cm)
+            cosθ_i = LorentzVectorBase.pz(p1_cm) / p_mag
+            ϕ_i = atan(LorentzVectorBase.py(p1_cm), LorentzVectorBase.px(p1_cm))
+            analytic = decay_two_body(total, masses..., cosθ_i, ϕ_i)
+            @test analytic[1] ≈ point[1] atol = 5e-11 rtol = 5e-11
+            @test analytic[2] ≈ point[2] atol = 5e-11 rtol = 5e-11
+            @test two_body_phase_space_weight(total, masses...) ≈ phase_space_weight(point) atol =
+                5e-11 rtol = 5e-11
         end
     end
 

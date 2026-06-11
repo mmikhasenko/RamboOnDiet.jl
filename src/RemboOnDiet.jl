@@ -17,6 +17,9 @@ export total_momentum
 export mandelstam
 export invariant_masses
 export breakup_momentum
+export decay_two_body
+export parent_rest_frame
+export two_body_phase_space_weight
 export kallen
 export massless_phase_space_volume
 

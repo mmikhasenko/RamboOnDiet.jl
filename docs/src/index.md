@@ -35,6 +35,9 @@ phase_space_weight(point)
 - `rand(generator)`
 - `phase_space_weight(point)`
 - `total_momentum(point.momenta)`
+- `decay_two_body(parent, m1, m2, cosθ, ϕ)`
+- `parent_rest_frame(p, parent)`
+- `two_body_phase_space_weight(parent, m1, m2)`
 
 ```@contents
 Pages = [
