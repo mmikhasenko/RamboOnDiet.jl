@@ -3,7 +3,7 @@ Pkg.instantiate()
 
 using Documenter
 using Literate
-using RemboOnDiet
+using RamboOnDiet
 
 const DOCS_ROOT = @__DIR__
 const LITERATE_OUTPUT = joinpath(DOCS_ROOT, "src", "generated")
@@ -18,8 +18,8 @@ Literate.markdown(
 )
 
 makedocs(
-    sitename = "RemboOnDiet",
-    modules = [RemboOnDiet],
+    sitename = "RamboOnDiet",
+    modules = [RamboOnDiet],
     source = "src",
     build = "build",
     format = Documenter.HTML(repolink = "https://github.com/mmikhasenko/RamboOnDiet.jl"),

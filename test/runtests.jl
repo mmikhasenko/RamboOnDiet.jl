@@ -1,6 +1,6 @@
 using Test
 using Random
-using RemboOnDiet
+using RamboOnDiet
 using FourVectors
 using LorentzVectorBase
 using StaticArrays
@@ -9,7 +9,7 @@ include("validation.jl")
 
 const JULIA_SEED = 20260329
 
-@testset "RemboOnDiet" begin
+@testset "RamboOnDiet" begin
     rng = MersenneTwister(JULIA_SEED)
 
     @testset "Random number bookkeeping" begin

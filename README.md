@@ -1,10 +1,10 @@
-# RemboOnDiet.jl
+# RamboOnDiet.jl
 
 [![Docs](https://img.shields.io/badge/docs-dev-blue.svg)](https://mmikhasenko.github.io/RamboOnDiet.jl/)
 [![CI](https://github.com/mmikhasenko/RamboOnDiet.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/mmikhasenko/RamboOnDiet.jl/actions/workflows/ci.yml)
 [![Docs workflow](https://github.com/mmikhasenko/RamboOnDiet.jl/actions/workflows/docs.yml/badge.svg)](https://github.com/mmikhasenko/RamboOnDiet.jl/actions/workflows/docs.yml)
 
-`RemboOnDiet.jl` is a Julia package for generating relativistic `N`-body
+`RamboOnDiet.jl` is a Julia package for generating relativistic `N`-body
 phase-space points with a RAMBO-on-diet style sampler, with emphasis on
 numerically validated phase-space generation and Dalitz-plot studies.
 
@@ -41,7 +41,7 @@ Then open `docs/build/index.html`.
 ## Quick Start
 
 ```julia
-using RemboOnDiet
+using RamboOnDiet
 using FourVectors
 
 masses = [0.93827208816, 0.493677, 0.13957039]

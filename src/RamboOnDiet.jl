@@ -1,4 +1,4 @@
-module RemboOnDiet
+module RamboOnDiet
 
 using LinearAlgebra
 using Random

@@ -1,6 +1,6 @@
 # Implementation
 
-This page follows the actual code path in `RemboOnDiet.jl` so that the mathematical
+This page follows the actual code path in `RamboOnDiet.jl` so that the mathematical
 description maps directly onto the implementation.
 
 ## Public objects
