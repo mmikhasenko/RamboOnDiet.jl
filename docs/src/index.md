@@ -1,6 +1,6 @@
-# RemboOnDiet
+# RamboOnDiet
 
-`RemboOnDiet.jl` implements a RAMBO-on-diet style phase-space generator for relativistic
+`RamboOnDiet.jl` implements a RAMBO-on-diet style phase-space generator for relativistic
 multi-particle final states. It uses [`FourVectors.jl`](https://github.com/JuliaHEP/FourVectors.jl)
 and [`LorentzVectorBase.jl`](https://github.com/JuliaHEP/LorentzVectorBase.jl) for four-vector storage and operations, and it exposes a single
 `PhaseSpaceGenerator` object that can be sampled with `rand(generator)`.
@@ -19,7 +19,7 @@ they use a separate generator.
 ## Quick Start
 
 ```julia
-using RemboOnDiet
+using RamboOnDiet
 
 generator = PhaseSpaceGenerator([0.1, 0.2, 0.3, 0.4], 5.0)
 point = rand(generator)

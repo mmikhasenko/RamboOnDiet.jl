@@ -65,4 +65,5 @@ jobs:
             --no-progress
             --exclude '/Users/mikhailmikhasenko/Documents/JuliaDev.CAT/PhaseSpaceRembo/'
             --exclude 'https://mmikhasenko.github.io/RamboOnDiet.jl/'
+            --exclude 'https://doi.org/10.1016/0010-4655(86)90119-0'
             './**/*.md'

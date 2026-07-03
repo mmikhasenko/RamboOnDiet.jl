@@ -1,6 +1,6 @@
 # Algorithm
 
-`RemboOnDiet.jl` implements the sequential RAMBO-on-diet construction for an `n`-body
+`RamboOnDiet.jl` implements the sequential RAMBO-on-diet construction for an `n`-body
 phase-space point with total four-momentum `P` and outgoing masses `m_1, \ldots, m_n`.
 The public entry point is `PhaseSpaceGenerator`, but the core map is easiest to
 read as a sequence of deterministic steps fed by `3n - 4` uniform random numbers.
