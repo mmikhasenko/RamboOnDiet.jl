@@ -10,7 +10,10 @@ using LorentzVectorBase: E, px, py, pz, mass, mass2, spatial_magnitude
     generator = PhaseSpaceGenerator([0.2, 0.3, 0.4], 2.0)
     @test_throws ArgumentError generate_aligned_from_unit_hypercube([0.5], generator)
     for bad in (-0.1, 1.1, NaN, Inf)
-        @test_throws ArgumentError generate_aligned_from_unit_hypercube([0.5, bad], generator)
+        @test_throws ArgumentError generate_aligned_from_unit_hypercube(
+            [0.5, bad],
+            generator,
+        )
     end
 
     function validate_aligned_point(point, masses, total)
@@ -64,7 +67,8 @@ using LorentzVectorBase: E, px, py, pz, mass, mass2, spatial_magnitude
     # Sampler reproducibility and convenience overloads.
     a = generate_aligned_point(MersenneTwister(9), generator)
     b = generate_aligned_from_unit_hypercube(
-        rand(MersenneTwister(9), required_aligned_random_numbers(length(generator))), generator,
+        rand(MersenneTwister(9), required_aligned_random_numbers(length(generator))),
+        generator,
     )
     @test a.weight == b.weight
     @test all(px(a[i]) == px(b[i]) for i = 1:length(a))

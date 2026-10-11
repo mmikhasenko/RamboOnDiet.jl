@@ -164,7 +164,10 @@ Sample an aligned phase-space point. In the total rest frame, particle 1 points
 along -z and particle 2 lies in the xz plane with nonnegative x. The weight
 includes the integrated overall orientation, as in the ordinary generator.
 """
-function generate_aligned_point(rng::AbstractRNG, generator::PhaseSpaceGenerator{T}) where {T}
+function generate_aligned_point(
+    rng::AbstractRNG,
+    generator::PhaseSpaceGenerator{T},
+) where {T}
     rs = rand(rng, T, required_aligned_random_numbers(length(generator)))
     return generate_aligned_from_unit_hypercube(rs, generator)
 end
@@ -189,13 +192,16 @@ Weights retain the full phase-space normalization with overall rotations integra
 out; use these points for observables invariant under overall rest-frame rotations.
 """
 function generate_aligned_from_unit_hypercube(
-    rs::AbstractVector{<:Real}, generator::PhaseSpaceGenerator{T},
+    rs::AbstractVector{<:Real},
+    generator::PhaseSpaceGenerator{T},
 ) where {T}
     n = length(generator)
     expected = required_aligned_random_numbers(n)
-    length(rs) == expected || throw(ArgumentError(
-        "Expected $expected coordinates for $n aligned particles, got $(length(rs)).",
-    ))
+    length(rs) == expected || throw(
+        ArgumentError(
+            "Expected $expected coordinates for $n aligned particles, got $(length(rs)).",
+        ),
+    )
     all(r -> isfinite(r) && 0 <= r <= 1, rs) ||
         throw(ArgumentError("Aligned coordinates must be finite and in [0, 1]."))
 
