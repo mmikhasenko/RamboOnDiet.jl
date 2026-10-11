@@ -9,6 +9,7 @@ using LorentzVectorBase
 export PhaseSpacePoint
 export PhaseSpaceGenerator
 export generate_point
+export decay_two_body
 export generate_from_unit_hypercube
 export generate_aligned_point
 export generate_aligned_from_unit_hypercube

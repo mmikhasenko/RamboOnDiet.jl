@@ -1,5 +1,23 @@
 required_random_numbers(n::Integer) = 3 * n - 4
 
+"""
+    decay_two_body(generator; cosθ, ϕ)
+
+Construct a two-body `PhaseSpacePoint` at explicit rest-frame angles of particle 1.
+`cosθ` must be in `[-1, 1]`; `ϕ` is any finite azimuth in radians, modulo `2π`.
+Angles refer to the Cartesian axes before the rotation-free boost to the lab.
+The weight is the full angle-integrated phase-space volume `π*q/M`, not the
+density per solid angle, where `q` is the breakup momentum and `M` the parent
+mass. At threshold the momenta are at rest relative to the parent and weight is zero.
+"""
+function decay_two_body(generator::PhaseSpaceGenerator; cosθ::Real, ϕ::Real)
+    length(generator) == 2 || throw(ArgumentError("Expected a two-body generator."))
+    isfinite(cosθ) && -1 <= cosθ <= 1 ||
+        throw(ArgumentError("cosθ must be finite and in [-1, 1]."))
+    isfinite(ϕ) || throw(ArgumentError("ϕ must be finite."))
+    return generate_from_unit_hypercube([(cosθ + 1) / 2, mod(ϕ, 2π) / 2π], generator)
+end
+
 function generate_point(rng::AbstractRNG, generator::PhaseSpaceGenerator{T,N}) where {T,N}
     rs = SVector{required_random_numbers(N),T}(
         ntuple(_ -> rand(rng, T), Val(required_random_numbers(N))),
