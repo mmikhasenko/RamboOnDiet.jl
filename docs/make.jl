@@ -2,20 +2,7 @@ import Pkg
 Pkg.instantiate()
 
 using Documenter
-using Literate
 using RamboOnDiet
-
-const DOCS_ROOT = @__DIR__
-const LITERATE_OUTPUT = joinpath(DOCS_ROOT, "src", "generated")
-
-mkpath(LITERATE_OUTPUT)
-
-Literate.markdown(
-    joinpath(DOCS_ROOT, "three-body.jl"),
-    LITERATE_OUTPUT;
-    documenter = true,
-    flavor = Literate.DocumenterFlavor(),
-)
 
 makedocs(
     sitename = "RamboOnDiet",
@@ -30,5 +17,6 @@ makedocs(
         "Implementation" => "implementation.md",
         "Edge cases" => "edge-cases.md",
         "Three-Body Tutorial" => "generated/three-body.md",
+        "B Decay Tutorial" => "generated/b-decay.md",
     ],
 )
