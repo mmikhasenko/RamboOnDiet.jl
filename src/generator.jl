@@ -144,3 +144,75 @@ function threshold_configuration(masses::AbstractVector{T}, total::FourVector{T}
     end
     return PhaseSpacePoint(momenta, zero(T))
 end
+
+"""
+    required_aligned_random_numbers(n)
+
+Number of unit-cube coordinates for aligned n-body phase space: `3n - 7`.
+Requires at least three final-state particles.
+"""
+function required_aligned_random_numbers(n::Integer)
+    n >= 3 || throw(ArgumentError("Aligned generation requires at least three particles."))
+    return 3 * n - 7
+end
+
+"""
+    generate_aligned_point([rng], generator)
+    generate_aligned_point([rng], masses, total_or_sqrt_s)
+
+Sample an aligned phase-space point. In the total rest frame, particle 1 points
+along -z and particle 2 lies in the xz plane with nonnegative x. The weight
+includes the integrated overall orientation, as in the ordinary generator.
+"""
+function generate_aligned_point(rng::AbstractRNG, generator::PhaseSpaceGenerator{T}) where {T}
+    rs = rand(rng, T, required_aligned_random_numbers(length(generator)))
+    return generate_aligned_from_unit_hypercube(rs, generator)
+end
+
+generate_aligned_point(generator::PhaseSpaceGenerator) =
+    generate_aligned_point(Random.default_rng(), generator)
+generate_aligned_point(rng::AbstractRNG, masses, total_or_sqrt_s) =
+    generate_aligned_point(rng, PhaseSpaceGenerator(masses, total_or_sqrt_s))
+generate_aligned_point(masses, total_or_sqrt_s) =
+    generate_aligned_point(Random.default_rng(), masses, total_or_sqrt_s)
+
+"""
+    generate_aligned_from_unit_hypercube(rs, generator)
+    generate_aligned_from_unit_hypercube(rs, masses, total_or_sqrt_s)
+
+Map `3n - 7` coordinates in `[0, 1]` to an aligned n-body point (`n >= 3`).
+The first `n - 2` inputs set cluster masses, the next sets `cos(theta_2)`,
+and the rest alternate polar and azimuthal coordinates for splittings 3 onward.
+Fix `cos(theta_1) = -1`, `phi_1 = 0`, and `phi_2 = 0` in the total rest frame.
+For a moving total, boost the completed rest-frame configuration to the lab.
+Weights retain the full phase-space normalization with overall rotations integrated
+out; use these points for observables invariant under overall rest-frame rotations.
+"""
+function generate_aligned_from_unit_hypercube(
+    rs::AbstractVector{<:Real}, generator::PhaseSpaceGenerator{T},
+) where {T}
+    n = length(generator)
+    expected = required_aligned_random_numbers(n)
+    length(rs) == expected || throw(ArgumentError(
+        "Expected $expected coordinates for $n aligned particles, got $(length(rs)).",
+    ))
+    all(r -> isfinite(r) && 0 <= r <= 1, rs) ||
+        throw(ArgumentError("Aligned coordinates must be finite and in [0, 1]."))
+
+    # Restore the three fixed angular inputs in the ordinary cube ordering.
+    full = Vector{T}(undef, required_random_numbers(n))
+    full[1:(n-2)] .= rs[1:(n-2)]
+    full[n-1] = zero(T) # cos(theta_1) = -1
+    full[n] = zero(T)   # phi_1 = 0
+    full[n+1] = rs[n-1] # free polar coordinate for particle 2
+    full[n+2] = zero(T) # phi_2 = 0
+    full[(n+3):end] .= rs[n:end]
+
+    rest_total = FourVector(zero(T), zero(T), zero(T); E = generator.invariant_mass)
+    point = generate_from_unit_hypercube(full, generator.masses, rest_total)
+    momenta = [boost(p, generator.total) for p in point.momenta]
+    return PhaseSpacePoint(momenta, point.weight)
+end
+
+generate_aligned_from_unit_hypercube(rs::AbstractVector{<:Real}, masses, total_or_sqrt_s) =
+    generate_aligned_from_unit_hypercube(rs, PhaseSpaceGenerator(masses, total_or_sqrt_s))
