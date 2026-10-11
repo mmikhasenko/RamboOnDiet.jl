@@ -28,15 +28,18 @@ are registered in General and resolved automatically.
 - [Documentation website](https://mmikhasenko.github.io/RamboOnDiet.jl/)
 - [Documentation overview](docs/src/index.md)
 - [Three-body tutorial](docs/src/generated/three-body.md)
+- [B decay cascade and Arrow export](docs/src/generated/b-decay.md)
 
 To build the rendered docs locally, run:
 
 ```bash
-julia --project=docs -e 'using Pkg; Pkg.instantiate()'
+julia --project=docs docs/generate.jl
 julia --project=docs docs/make.jl
 ```
 
-Then open `docs/build/index.html`.
+Then open `docs/build/index.html`. After editing a tutorial `.jl` file, regenerate
+and commit its Markdown in `docs/src/generated/`. CI runs only `docs/make.jl`;
+it builds the committed Markdown and executes its Documenter examples.
 
 ## Quick Start
 
