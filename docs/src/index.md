@@ -40,13 +40,13 @@ The package exports eight names:
 | `decay_two_body` | Construct a two-body point at explicit rest-frame angles |
 | `generate_from_unit_hypercube` | Map `3n - 4` unit-cube inputs to a point |
 | `generate_aligned_point` | Sample a point with fixed overall orientation |
-| `generate_aligned_from_unit_hypercube` | Map `3n - 7` inputs to an aligned point |
+| `generate_aligned_from_unit_hypercube` | Map zero (two-body) or `3n - 7` inputs to an aligned point |
 | `phase_space_weight` | Read the phase-space integration weight |
 
 Use `PhaseSpaceGenerator(masses, sqrt_s)` for a parent at rest, or
 `PhaseSpaceGenerator(masses, total::FourVector)` for a moving parent.
 Read momenta through `point[i]` or `point.momenta`. The ordinary coordinate count
-is `generator.random_numbers`; the aligned count is `3 * length(generator) - 7`.
+is `generator.random_numbers`; the aligned count is zero for two bodies and `3 * length(generator) - 7` otherwise.
 
 Kinematic analysis uses the existing four-vector operations:
 

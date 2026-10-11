@@ -163,9 +163,10 @@ function threshold_configuration(masses::AbstractVector{T}, total::FourVector{T}
     return PhaseSpacePoint(momenta, zero(T))
 end
 
-# Internal coordinate count for aligned phase space (n >= 3).
+# Internal coordinate count for aligned phase space.
 function required_aligned_random_numbers(n::Integer)
-    n >= 3 || throw(ArgumentError("Aligned generation requires at least three particles."))
+    n >= 2 || throw(ArgumentError("Aligned generation requires at least two particles."))
+    n == 2 && return 0
     return 3 * n - 7
 end
 
@@ -173,8 +174,10 @@ end
     generate_aligned_point([rng], generator)
     generate_aligned_point([rng], masses, total_or_sqrt_s)
 
-Sample an aligned phase-space point. In the total rest frame, particle 1 points
-along -z and particle 2 lies in the xz plane with nonnegative x. The weight
+Sample an aligned phase-space point. For two bodies, no random numbers are needed:
+particle 1 points along +z and particle 2 along -z in the total rest frame.
+For three or more bodies, particle 1 points along -z and particle 2 lies in the
+xz plane with nonnegative x. The weight
 includes the integrated overall orientation, as in the ordinary generator.
 """
 function generate_aligned_point(
@@ -196,7 +199,9 @@ generate_aligned_point(masses, total_or_sqrt_s) =
     generate_aligned_from_unit_hypercube(rs, generator)
     generate_aligned_from_unit_hypercube(rs, masses, total_or_sqrt_s)
 
-Map `3n - 7` coordinates in `[0, 1]` to an aligned n-body point (`n >= 3`).
+For two bodies, pass an empty vector: particle 1 points along +z and particle 2
+along -z in the total rest frame. For `n >= 3`, map `3n - 7` coordinates in
+`[0, 1]` to an aligned n-body point.
 The first `n - 2` inputs set cluster masses, the next sets `cos(theta_2)`,
 and the rest alternate polar and azimuthal coordinates for splittings 3 onward.
 Fix `cos(theta_1) = -1`, `phi_1 = 0`, and `phi_2 = 0` in the total rest frame.
@@ -217,6 +222,8 @@ function generate_aligned_from_unit_hypercube(
     )
     all(r -> isfinite(r) && 0 <= r <= 1, rs) ||
         throw(ArgumentError("Aligned coordinates must be finite and in [0, 1]."))
+
+    n == 2 && return decay_two_body(generator; cosθ = one(T), ϕ = zero(T))
 
     # Restore the three fixed angular inputs in the ordinary cube ordering.
     full = Vector{T}(undef, required_random_numbers(n))
