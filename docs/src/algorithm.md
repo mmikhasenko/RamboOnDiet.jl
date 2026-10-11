@@ -143,14 +143,19 @@ The returned `PhaseSpacePoint` stores a weight:
 In the implementation this is written as
 
 ```math
-w = \Phi_n^{(0)}(P^2)\,
+w = \Phi_n^{(0)}(\Delta^2)\,
 \prod_{i=2}^{n-1} \frac{M_i}{\mu_i}
 \prod_{i=2}^{n}
 \frac{\rho_2(M_{i-1}; m_{i-1}, M_i)}
      {\rho_2(\mu_{i-1}; 0, \mu_i)},
 ```
 
-with the two-body density
+The prefactor is the massless volume at the reduced mass `Δ`, because the auxiliary
+mass chain starts at `μ_1 = Δ`. For `n > 2`, it equals the volume at `P²` only when
+all daughter masses vanish. Using `P²` for massive daughters would overestimate every weight by
+`(√(P²)/Δ)^(2n - 4)`.
+
+The two-body density is
 
 ```math
 \rho_2(M; m_a, m_b) = \frac{q(M; m_a, m_b)}{4M}.

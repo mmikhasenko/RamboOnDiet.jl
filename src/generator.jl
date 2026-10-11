@@ -105,7 +105,8 @@ function generate_from_unit_hypercube(
     end
     momenta[n] = current_cluster
 
-    base_weight = T(massless_phase_space_volume(Mtot^2, n))
+    # The auxiliary massless phase space starts at the available kinetic mass Δ.
+    base_weight = T(massless_phase_space_volume(reduced_masses[1]^2, n))
     if all(iszero, massesT)
         return PhaseSpacePoint(momenta, base_weight)
     end
