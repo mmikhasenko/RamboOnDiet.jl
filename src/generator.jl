@@ -1,21 +1,19 @@
 required_random_numbers(n::Integer) = 3 * n - 4
 
-# rand(T) samples [0, 1); mass coordinates require the open interval.
-function rand_mass_coordinate(rng::AbstractRNG, ::Type{T}) where {T}
-    r = rand(rng, T)
-    while iszero(r)
-        r = rand(rng, T)
+# Draw the whole cube first; only mass coordinates need zero resampling.
+function resample_mass_zeros!(rng::AbstractRNG, rs::AbstractVector, n_mass::Integer)
+    for i = 1:n_mass
+        while iszero(rs[i])
+            rs[i] = rand(rng, eltype(rs))
+        end
     end
-    return r
+    return rs
 end
 
-function generate_point(rng::AbstractRNG, generator::PhaseSpaceGenerator{T,N}) where {T,N}
-    rs = SVector{required_random_numbers(N),T}(
-        ntuple(
-            i -> i <= N - 2 ? rand_mass_coordinate(rng, T) : rand(rng, T),
-            Val(required_random_numbers(N)),
-        ),
-    )
+function generate_point(rng::AbstractRNG, generator::PhaseSpaceGenerator{T}) where {T}
+    n = length(generator)
+    rs = rand(rng, T, required_random_numbers(n))
+    resample_mass_zeros!(rng, rs, n - 2)
     return generate_from_unit_hypercube(rs, generator)
 end
 
@@ -189,10 +187,8 @@ function generate_aligned_point(
     generator::PhaseSpaceGenerator{T},
 ) where {T}
     n = length(generator)
-    rs = [
-        i <= n - 2 ? rand_mass_coordinate(rng, T) : rand(rng, T) for
-        i = 1:required_aligned_random_numbers(n)
-    ]
+    rs = rand(rng, T, required_aligned_random_numbers(n))
+    resample_mass_zeros!(rng, rs, n - 2)
     return generate_aligned_from_unit_hypercube(rs, generator)
 end
 
