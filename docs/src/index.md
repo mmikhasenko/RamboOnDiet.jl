@@ -68,7 +68,7 @@ helper computed a pair invariant mass squared, now written directly as
 `mass2(point[i] + point[j])`.
 
 ```@contents
-Pages = ["algorithm.md", "implementation.md", "generated/three-body.md"]
+Pages = ["algorithm.md", "implementation.md", "edge-cases.md", "generated/three-body.md"]
 Depth = 2
 ```
 
@@ -76,4 +76,5 @@ Depth = 2
 
 - [Algorithm overview](algorithm.md)
 - [Implementation details](implementation.md)
+- [Edge cases](edge-cases.md)
 - [Three-body generation and Dalitz processing](generated/three-body.md)
