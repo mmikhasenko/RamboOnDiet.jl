@@ -3,3 +3,4 @@ Manifest.toml
 docs/Manifest.toml
 .DS_Store
 docs/generated/*.arrow
+docs/src/generated/b-decay.md
