@@ -145,12 +145,7 @@ function threshold_configuration(masses::AbstractVector{T}, total::FourVector{T}
     return PhaseSpacePoint(momenta, zero(T))
 end
 
-"""
-    required_aligned_random_numbers(n)
-
-Number of unit-cube coordinates for aligned n-body phase space: `3n - 7`.
-Requires at least three final-state particles.
-"""
+# Internal coordinate count for aligned phase space (n >= 3).
 function required_aligned_random_numbers(n::Integer)
     n >= 3 || throw(ArgumentError("Aligned generation requires at least three particles."))
     return 3 * n - 7

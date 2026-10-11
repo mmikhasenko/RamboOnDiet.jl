@@ -49,7 +49,7 @@ generator = PhaseSpaceGenerator(masses, 2.28646)
 point = rand(generator)
 
 weight = phase_space_weight(point)
-total = total_momentum(point.momenta)
+total = sum(point.momenta)
 ```
 
 ## Aligned phase space
