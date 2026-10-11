@@ -5,8 +5,9 @@ using LorentzVectorBase: E, px, py, pz, mass, mass2, spatial_magnitude
     @test required_aligned_random_numbers(3) == 2
     @test required_aligned_random_numbers(4) == 5
     @test required_aligned_random_numbers(6) == 11
-    @test_throws ArgumentError required_aligned_random_numbers(2)
-    @test_throws ArgumentError generate_aligned_point([0.1, 0.2], 1.0)
+    @test required_aligned_random_numbers(2) == 0
+    @test_throws ArgumentError required_aligned_random_numbers(1)
+    @test_throws ArgumentError generate_aligned_point([0.1], 1.0)
     generator = PhaseSpaceGenerator([0.2, 0.3, 0.4], 2.0)
     @test_throws ArgumentError generate_aligned_from_unit_hypercube([0.5], generator)
     for bad in (-0.1, 1.1, NaN, Inf)
@@ -23,6 +24,40 @@ using LorentzVectorBase: E, px, py, pz, mass, mass2, spatial_magnitude
         summed = total_momentum(point.momenta)
         for component in (E, px, py, pz)
             @test component(summed) ≈ component(total) atol = 5e-10
+        end
+    end
+
+    @testset "Two-body alignment without coordinates" begin
+        for masses in ([0.0, 0.0], [0.3, 0.5])
+            M = sum(masses) + 1.0
+            generator = PhaseSpaceGenerator(masses, M)
+            point = generate_aligned_from_unit_hypercube(Float64[], generator)
+            validate_aligned_point(point, masses, generator.total)
+            @test pz(point[1]) > 0
+            @test pz(point[2]) < 0
+            @test all(iszero(px(p)) && iszero(py(p)) for p in point)
+            @test point.weight ≈ reference_two_body(M, masses...)
+            sampled = generate_aligned_point(rng, generator)
+            @test pz(sampled[1]) == pz(point[1])
+            @test sampled.weight == point.weight
+            @test_throws ArgumentError generate_aligned_from_unit_hypercube([0.5], generator)
+
+            moving = FourVector(0.4, -0.3, 0.8; E = sqrt(M^2 + 0.89))
+            lab = generate_aligned_from_unit_hypercube(Float64[], masses, moving)
+            validate_aligned_point(lab, masses, moving)
+            for i = 1:2, component in (E, px, py, pz)
+                @test component(lab[i]) ≈ component(RamboOnDiet.boost(point[i], moving)) atol = 1e-12
+            end
+            @test lab.weight ≈ point.weight
+        end
+        seeded = MersenneTwister(42)
+        generate_aligned_point(seeded, (0.3, 0.5), 2.0)
+        @test rand(seeded) == rand(MersenneTwister(42))
+        for total in (FourVector(0.0, 0.0, 0.0; E = 1.0),
+                      FourVector(0.0, 0.0, 0.75; E = 1.25))
+            point = generate_aligned_from_unit_hypercube(Float64[], [0.4, 0.6], total)
+            validate_aligned_point(point, [0.4, 0.6], total)
+            @test point.weight == 0
         end
     end
 

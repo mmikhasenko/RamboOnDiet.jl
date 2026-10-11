@@ -225,6 +225,10 @@ polar angles are not automatically helicity angles along each cluster's flight d
 
 ## Aligned four-vectors
 
+For two bodies, aligned generation takes an empty coordinate vector and fixes
+particle 1 along +z and particle 2 along -z in the center-of-mass frame.
+The weight retains the full integrated solid angle.
+
 For `n >= 3`, overall spatial orientation can be fixed by choosing:
 
 - `p1` along **-z** in the total rest frame: `cos(theta_1) = -1` and `phi_1 = 0`;

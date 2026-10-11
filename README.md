@@ -57,6 +57,13 @@ total = sum(point.momenta)
 
 ## Aligned phase space
 
+Two-body alignment needs no coordinates: particle 1 points along +z and particle 2
+along -z in the center-of-mass frame.
+
+```julia
+point = generate_aligned_from_unit_hypercube(Float64[], PhaseSpaceGenerator([0.3, 0.5], 2.0))
+```
+
 For `n >= 3`, fix the overall orientation with particle 1 along -z and particle 2
 in the xz plane with nonnegative x, in the total rest frame:
 

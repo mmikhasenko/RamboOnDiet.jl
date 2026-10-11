@@ -19,7 +19,7 @@ point = rand(generator)
 ```
 
 The number of ordinary unit-cube inputs is available as `generator.random_numbers`
-(`3n - 4`). The aligned map uses `3n - 7` inputs for `n >= 3`.
+(`3n - 4`). The aligned map uses zero inputs for two bodies and `3n - 7` inputs for `n >= 3`.
 Coordinate-count and kinematic helper functions are internal implementation details.
 
 ## Data flow in `generate_from_unit_hypercube`
