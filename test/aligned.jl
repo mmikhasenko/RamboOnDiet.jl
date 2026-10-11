@@ -40,21 +40,25 @@ using LorentzVectorBase: E, px, py, pz, mass, mass2, spatial_magnitude
             sampled = generate_aligned_point(rng, generator)
             @test pz(sampled[1]) == pz(point[1])
             @test sampled.weight == point.weight
-            @test_throws ArgumentError generate_aligned_from_unit_hypercube([0.5], generator)
+            @test_throws ArgumentError generate_aligned_from_unit_hypercube(
+                [0.5],
+                generator,
+            )
 
             moving = FourVector(0.4, -0.3, 0.8; E = sqrt(M^2 + 0.89))
             lab = generate_aligned_from_unit_hypercube(Float64[], masses, moving)
             validate_aligned_point(lab, masses, moving)
             for i = 1:2, component in (E, px, py, pz)
-                @test component(lab[i]) ≈ component(RamboOnDiet.boost(point[i], moving)) atol = 1e-12
+                @test component(lab[i]) ≈ component(RamboOnDiet.boost(point[i], moving)) atol =
+                    1e-12
             end
             @test lab.weight ≈ point.weight
         end
         seeded = MersenneTwister(42)
         generate_aligned_point(seeded, (0.3, 0.5), 2.0)
         @test rand(seeded) == rand(MersenneTwister(42))
-        for total in (FourVector(0.0, 0.0, 0.0; E = 1.0),
-                      FourVector(0.0, 0.0, 0.75; E = 1.25))
+        for total in
+            (FourVector(0.0, 0.0, 0.0; E = 1.0), FourVector(0.0, 0.0, 0.75; E = 1.25))
             point = generate_aligned_from_unit_hypercube(Float64[], [0.4, 0.6], total)
             validate_aligned_point(point, [0.4, 0.6], total)
             @test point.weight == 0
