@@ -23,6 +23,7 @@ const JULIA_SEED = 20260329
     include("normalization.jl")
     include("aligned.jl")
     include("threebodydecays.jl")
+    include("boundaries.jl")
     rng = MersenneTwister(JULIA_SEED)
 
     @testset "Random number bookkeeping" begin

@@ -1,9 +1,19 @@
 required_random_numbers(n::Integer) = 3 * n - 4
 
-function generate_point(rng::AbstractRNG, generator::PhaseSpaceGenerator{T,N}) where {T,N}
-    rs = SVector{required_random_numbers(N),T}(
-        ntuple(_ -> rand(rng, T), Val(required_random_numbers(N))),
-    )
+# Draw the whole cube first; only mass coordinates need zero resampling.
+function resample_mass_zeros!(rng::AbstractRNG, rs::AbstractVector, n_mass::Integer)
+    for i = 1:n_mass
+        while iszero(rs[i])
+            rs[i] = rand(rng, eltype(rs))
+        end
+    end
+    return rs
+end
+
+function generate_point(rng::AbstractRNG, generator::PhaseSpaceGenerator{T}) where {T}
+    n = length(generator)
+    rs = rand(rng, T, required_random_numbers(n))
+    resample_mass_zeros!(rng, rs, n - 2)
     return generate_from_unit_hypercube(rs, generator)
 end
 
@@ -51,6 +61,9 @@ function generate_from_unit_hypercube(
         ),
     )
 
+    all(r -> isfinite(r) && 0 <= r <= 1, rs) ||
+        throw(ArgumentError("Coordinates must be finite and in [0, 1]."))
+
     massesT = T.(masses)
     Mtot = LorentzVectorBase.mass(total)
     total_mass = sum(massesT)
@@ -59,6 +72,15 @@ function generate_from_unit_hypercube(
 
     if isapprox(Mtot, total_mass; atol = sqrt(eps(T)), rtol = sqrt(eps(T)))
         return threshold_configuration(massesT, total)
+    end
+
+    # Above threshold, the mass map is defined only on the open interval.
+    # Check in the working precision too: conversion can round an input to 0 or 1.
+    for i = 1:(n-2)
+        r = T(rs[i])
+        0 < r < 1 || throw(
+            DomainError(rs[i], "Mass coordinate $i must lie strictly between 0 and 1."),
+        )
     end
 
     tail_masses = similar(massesT)
@@ -156,17 +178,19 @@ end
     generate_aligned_point([rng], generator)
     generate_aligned_point([rng], masses, total_or_sqrt_s)
 
-Sample an aligned phase-space point. For two bodies, no random numbers are needed:
-particle 1 points along +z and particle 2 along -z in the total rest frame.
-For three or more bodies, particle 1 points along -z and particle 2 lies in the
-xz plane with nonnegative x. The weight
+Sample an aligned phase-space point, redrawing exact-zero mass coordinates.
+For two bodies, no random numbers are needed: particle 1 points along +z and
+particle 2 along -z in the total rest frame. For three or more bodies, particle 1
+points along -z and particle 2 lies in the xz plane with nonnegative x. The weight
 includes the integrated overall orientation, as in the ordinary generator.
 """
 function generate_aligned_point(
     rng::AbstractRNG,
     generator::PhaseSpaceGenerator{T},
 ) where {T}
-    rs = rand(rng, T, required_aligned_random_numbers(length(generator)))
+    n = length(generator)
+    rs = rand(rng, T, required_aligned_random_numbers(n))
+    resample_mass_zeros!(rng, rs, n - 2)
     return generate_aligned_from_unit_hypercube(rs, generator)
 end
 
@@ -182,8 +206,11 @@ generate_aligned_point(masses, total_or_sqrt_s) =
     generate_aligned_from_unit_hypercube(rs, masses, total_or_sqrt_s)
 
 For two bodies, pass an empty vector: particle 1 points along +z and particle 2
-along -z in the total rest frame. For `n >= 3`, map `3n - 7` coordinates in
-`[0, 1]` to an aligned n-body point.
+along -z in the total rest frame. For `n >= 3`, map `3n - 7` coordinates to an
+aligned n-body point.
+Above threshold, mass coordinates must be strictly in `(0, 1)` (otherwise a
+`DomainError` is thrown); angular coordinates may include both endpoints of `[0, 1]`.
+At the total threshold, any finite unit-cube inputs give the threshold configuration.
 The first `n - 2` inputs set cluster masses, the next sets `cos(theta_2)`,
 and the rest alternate polar and azimuthal coordinates for splittings 3 onward.
 Fix `cos(theta_1) = -1`, `phi_1 = 0`, and `phi_2 = 0` in the total rest frame.

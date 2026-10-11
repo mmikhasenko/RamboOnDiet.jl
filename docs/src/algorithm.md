@@ -55,6 +55,10 @@ uniform random numbers:
 The last intermediate mass is fixed by kinematics, so only `n - 2` mass-like variables
 are needed.
 
+Above threshold, mass coordinates lie strictly in `(0, 1)`; angular coordinates
+lie in `[0, 1]`. See [Edge cases](edge-cases.md) for endpoint handling, threshold
+configurations, and numerical integration considerations.
+
 ## Mapping of the `u` variables
 
 Let
@@ -235,7 +239,8 @@ These are three fixed angular coordinates, but they are **not three consecutive
 entries**: `theta_2` remains free. Since the first cluster travels along +z,
 its boost also leaves `p2` in the positive-x half of the xz plane in the total rest frame.
 
-The reduced input belongs to `[0, 1]^(3n - 7)`, with ordering:
+Above threshold, the reduced input has `n - 2` open mass coordinates and
+`2n - 5` closed angular coordinates, with ordering:
 
 | Reduced inputs | Meaning |
 |:--|:--|
