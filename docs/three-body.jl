@@ -24,9 +24,9 @@ default(size = (780, 620), legend = false)
 
 function events_table(points)
     return DataFrame(
-        s23 = [invariant_masses(point.momenta).s23 for point in points],
-        s31 = [invariant_masses(point.momenta).s31 for point in points],
-        s12 = [invariant_masses(point.momenta).s12 for point in points],
+        s23 = [mass2(point[2] + point[3]) for point in points],
+        s31 = [mass2(point[3] + point[1]) for point in points],
+        s12 = [mass2(point[1] + point[2]) for point in points],
         jacobian = [phase_space_weight(point) for point in points],
     )
 end
@@ -141,10 +141,10 @@ massive_plot
 # ## Building the total four-momentum explicitly
 #
 # The high-level `generate_point(rng, masses, sqrt_s)` helper works in the center-of-mass frame.
-# If you want a moving parent, construct the total-state `FourVector` and use `generate_momenta`.
+# For a moving parent, pass the total-state `FourVector` to `PhaseSpaceGenerator`.
 
 beam_total = FourVector(0.35, -0.2, 1.1; E = sqrt(lc_masses.m0^2 + 0.35^2 + 0.2^2 + 1.1^2))
 boosted_generator = PhaseSpaceGenerator(massive_masses, beam_total)
 boosted_point = rand(rng, boosted_generator)
 
-total_momentum(boosted_point.momenta)
+sum(boosted_point.momenta)

@@ -247,7 +247,7 @@ coordinate mapped as above.
 using Random, RamboOnDiet
 
 generator = PhaseSpaceGenerator([0.1, 0.2, 0.3, 0.4], 3.0)
-required_aligned_random_numbers(4) # 5
+3 * length(generator) - 7 # 5 aligned coordinates
 
 # Random sampling, with an optional explicit RNG.
 point = generate_aligned_point(MersenneTwister(7), generator)
@@ -271,7 +271,6 @@ rotations in the total rest frame. To model orientation-dependent observables,
 use the ordinary sampler or restore a uniformly sampled overall rotation.
 
 ```@docs
-required_aligned_random_numbers
 generate_aligned_point
 generate_aligned_from_unit_hypercube
 ```

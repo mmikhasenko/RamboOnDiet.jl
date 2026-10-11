@@ -18,8 +18,9 @@ generator = PhaseSpaceGenerator([0.0, 0.0, 0.0], 2.0)
 point = rand(generator)
 ```
 
-The number of required random inputs is exposed as
-`required_random_numbers`, and `generator.random_numbers` is a derived property.
+The number of ordinary unit-cube inputs is available as `generator.random_numbers`
+(`3n - 4`). The aligned map uses `3n - 7` inputs for `n >= 3`.
+Coordinate-count and kinematic helper functions are internal implementation details.
 
 ## Data flow in `generate_from_unit_hypercube`
 

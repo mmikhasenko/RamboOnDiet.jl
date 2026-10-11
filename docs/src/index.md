@@ -30,11 +30,42 @@ phase_space_weight(point)
 
 ## Main API
 
-- `PhaseSpaceGenerator(masses, sqrt_s)`
-- `PhaseSpaceGenerator(masses, total::FourVector)`
-- `rand(generator)`
-- `phase_space_weight(point)`
-- `total_momentum(point.momenta)`
+The package exports seven names:
+
+| Name | Purpose |
+|:--|:--|
+| `PhaseSpaceGenerator` | Configure masses and total energy or four-momentum |
+| `PhaseSpacePoint` | Store the generated four-vectors and event weight |
+| `generate_point` | Sample an ordinary point; also available as `rand(generator)` |
+| `generate_from_unit_hypercube` | Map `3n - 4` unit-cube inputs to a point |
+| `generate_aligned_point` | Sample a point with fixed overall orientation |
+| `generate_aligned_from_unit_hypercube` | Map `3n - 7` inputs to an aligned point |
+| `phase_space_weight` | Read the phase-space integration weight |
+
+Use `PhaseSpaceGenerator(masses, sqrt_s)` for a parent at rest, or
+`PhaseSpaceGenerator(masses, total::FourVector)` for a moving parent.
+Read momenta through `point[i]` or `point.momenta`. The ordinary coordinate count
+is `generator.random_numbers`; the aligned count is `3 * length(generator) - 7`.
+
+Kinematic analysis uses the existing four-vector operations:
+
+```julia
+using FourVectors
+
+sum(point.momenta)          # total four-momentum
+mass2(point[2] + point[3])   # pair invariant s23 = (p2 + p3)^2
+```
+
+### Migrating from the larger export list
+
+Coordinate-count helpers, kinematic helpers, and `generate_momenta` are no longer
+exported. Use the expressions above for counts, totals, and pair invariants; replace
+`generate_momenta(masses, total)` with `rand(PhaseSpaceGenerator(masses, total))`
+(or `rand(rng, generator)` with an explicit RNG). The old helper implementations
+remain accessible with the `RamboOnDiet.` prefix for compatibility, but are internal
+and are not part of the supported public API. In particular, the old `mandelstam`
+helper computed a pair invariant mass squared, now written directly as
+`mass2(point[i] + point[j])`.
 
 ```@contents
 Pages = ["algorithm.md", "implementation.md", "generated/three-body.md"]

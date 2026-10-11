@@ -1,6 +1,16 @@
 using Test
 using Random
 using RamboOnDiet
+# Internal helpers used to validate the implementation, not part of the public API.
+using RamboOnDiet:
+    required_random_numbers,
+    required_aligned_random_numbers,
+    total_momentum,
+    mandelstam,
+    invariant_masses,
+    kallen,
+    massless_phase_space_volume,
+    generate_momenta
 using FourVectors
 using LorentzVectorBase
 using StaticArrays
