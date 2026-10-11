@@ -66,3 +66,7 @@ The reduced map uses `3n - 7` unit-cube coordinates: `n - 2` mass coordinates,
 then the polar coordinate for particle 2, then polar/azimuthal pairs for subsequent
 splittings. Weights include the integrated overall orientation. See the
 [coordinate maps and aligned-vector conventions](docs/src/algorithm.md#aligned-four-vectors).
+
+Above threshold, mass coordinates must be strictly between 0 and 1; angular
+coordinates may include both endpoints. Random samplers redraw exact-zero mass
+inputs; deterministic maps throw `DomainError` for mass endpoints.
