@@ -15,6 +15,7 @@ makedocs(
         "Home" => "index.md",
         "Algorithm" => "algorithm.md",
         "Implementation" => "implementation.md",
+        "Edge cases" => "edge-cases.md",
         "Three-Body Tutorial" => "generated/three-body.md",
         "B Decay Tutorial" => "generated/b-decay.md",
     ],
