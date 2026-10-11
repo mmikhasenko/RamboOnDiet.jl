@@ -10,6 +10,7 @@ include("validation.jl")
 const JULIA_SEED = 20260329
 
 @testset "RamboOnDiet" begin
+    include("normalization.jl")
     rng = MersenneTwister(JULIA_SEED)
 
     @testset "Random number bookkeeping" begin
