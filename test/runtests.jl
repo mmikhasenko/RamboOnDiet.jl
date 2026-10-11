@@ -21,7 +21,6 @@ const JULIA_SEED = 20260329
 
 @testset "RamboOnDiet" begin
     include("normalization.jl")
-    include("two_body.jl")
     include("aligned.jl")
     include("threebodydecays.jl")
     rng = MersenneTwister(JULIA_SEED)

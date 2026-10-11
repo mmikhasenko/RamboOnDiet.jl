@@ -55,13 +55,6 @@ weight = phase_space_weight(point)
 total = sum(point.momenta)
 ```
 
-For a deterministic two-body decay, specify particle 1's rest-frame polar cosine
-and azimuth (radians). The weight still includes the full solid angle:
-
-```julia
-point = decay_two_body(PhaseSpaceGenerator([0.3, 0.5], 2.0); cosθ = 0.4, ϕ = π/3)
-```
-
 ## Aligned phase space
 
 Two-body alignment needs no coordinates: particle 1 points along +z and particle 2

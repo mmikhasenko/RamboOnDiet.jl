@@ -30,14 +30,13 @@ phase_space_weight(point)
 
 ## Main API
 
-The package exports eight names:
+The package exports seven names:
 
 | Name | Purpose |
 |:--|:--|
 | `PhaseSpaceGenerator` | Configure masses and total energy or four-momentum |
 | `PhaseSpacePoint` | Store the generated four-vectors and event weight |
 | `generate_point` | Sample an ordinary point; also available as `rand(generator)` |
-| `decay_two_body` | Construct a two-body point at explicit rest-frame angles |
 | `generate_from_unit_hypercube` | Map `3n - 4` unit-cube inputs to a point |
 | `generate_aligned_point` | Sample a point with fixed overall orientation |
 | `generate_aligned_from_unit_hypercube` | Map zero (two-body) or `3n - 7` inputs to an aligned point |
@@ -55,10 +54,6 @@ using FourVectors
 
 sum(point.momenta)          # total four-momentum
 mass2(point[2] + point[3])   # pair invariant s23 = (p2 + p3)^2
-```
-
-```@docs
-decay_two_body
 ```
 
 ### Migrating from the larger export list
