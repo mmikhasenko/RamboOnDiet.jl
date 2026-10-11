@@ -125,3 +125,24 @@ These are the cases where the expected geometry is clearest:
 
 That makes the three-body Dalitz plots a direct probe of the core mapping rather than of a
 special-case implementation.
+
+## Independent three-body coordinate-map check
+
+The test suite compares aligned three-body events directly with
+`ThreeBodyDecays.x2σs(x, ms; k = 1)`. This reference uses a first coordinate linear
+in `s23`, whereas RAMBO-on-diet uses a nonlinear mass coordinate. For aligned inputs
+`(u1, u2)`, the conversion is
+
+```math
+v = 1-\sqrt{1-u_1},\qquad
+m_{23} = m_2+m_3+\Delta\sqrt{v},\qquad
+x_1 = \frac{m_{23}^2-(m_2+m_3)^2}{(M-m_1)^2-(m_2+m_3)^2},\qquad
+x_2 = u_2.
+```
+
+Here `Delta = M - m1 - m2 - m3`. The angle conventions agree because the aligned
+spectator `p1` points along -z, so the reference axis `-p1` points along +z.
+The tests compare all three invariants `(s23, s31, s12)` and the phase-space weight,
+including `dx1/du1` and the reference normalization factor `pi²/4`. They cover
+massless, massive, mixed-mass, and near-threshold configurations, including both
+polar endpoints. `ThreeBodyDecays` is a test dependency, not a runtime dependency.
