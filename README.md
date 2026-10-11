@@ -51,3 +51,18 @@ point = rand(generator)
 weight = phase_space_weight(point)
 total = total_momentum(point.momenta)
 ```
+
+## Aligned phase space
+
+For `n >= 3`, fix the overall orientation with particle 1 along -z and particle 2
+in the xz plane with nonnegative x, in the total rest frame:
+
+```julia
+point = generate_aligned_point(generator)
+point = generate_aligned_from_unit_hypercube([0.4, 0.6], generator) # three bodies
+```
+
+The reduced map uses `3n - 7` unit-cube coordinates: `n - 2` mass coordinates,
+then the polar coordinate for particle 2, then polar/azimuthal pairs for subsequent
+splittings. Weights include the integrated overall orientation. See the
+[coordinate maps and aligned-vector conventions](docs/src/algorithm.md#aligned-four-vectors).

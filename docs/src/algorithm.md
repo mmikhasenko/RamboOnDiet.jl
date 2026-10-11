@@ -167,3 +167,111 @@ massless two-body densities.
 
 That is why the three-body massless Dalitz plot is flat without weights, while the
 massive Dalitz plot becomes flat only after filling with `weights = phase_space_weight(point)`.
+
+## Coordinate ordering: masses first, then angles
+
+For **n final particles there are n - 1 two-body splittings**. The `3n - 4`
+unit-cube inputs are ordered as follows:
+
+- The **first n - 2 coordinates** determine the intermediate cluster masses.
+- The **last 2(n - 1) coordinates** alternate polar and azimuthal coordinates,
+  one pair per splitting, in that splitting's parent rest frame.
+
+These inputs map to masses and angles; they are not themselves dimensional masses
+or angles. Polar inputs are uniform in `cos(theta)`, not in `theta`.
+The mass map is nonlinear and coupled: each cluster mass sets the range for the next.
+
+In the tables below, `u_1, u_2, ...` name the **unit-cube inputs** (called `rs` in
+code), not the derived mass-ratio variables `u_i` in the earlier mass recursion.
+Let `Delta = M - sum(masses)` with `M = sqrt(P²)`.
+
+### Three bodies
+
+The chain is `P -> p1 + Q23`, then `Q23 -> p2 + p3`.
+
+| Input | Meaning | Map |
+|:--|:--|:--|
+| `u_1` | Pair mass `m23` | `m23 = m2 + m3 + Delta * sqrt(1 - sqrt(1 - u_1))` |
+| `u_2` | Polar angle of `p1` in the total rest frame | `cos(theta_1) = 2u_2 - 1` |
+| `u_3` | Azimuth of `p1` in the total rest frame | `phi_1 = 2pi * u_3` |
+| `u_4` | Polar angle of `p2` in the `Q23` rest frame | `cos(theta_2) = 2u_4 - 1` |
+| `u_5` | Azimuth of `p2` in the `Q23` rest frame | `phi_2 = 2pi * u_5` |
+
+Thus there is one mass coordinate and four angular coordinates. The other independent
+Dalitz invariant is determined by the relative decay directions.
+
+### Four bodies
+
+The chain is `P -> p1 + Q234`, then `Q234 -> p2 + Q34`, then `Q34 -> p3 + p4`.
+Let `v` be the unique root in `[0, 1]` of `3v² - 2v³ = u_1`.
+
+| Input | Meaning | Map |
+|:--|:--|:--|
+| `u_1` | Cluster mass `m234` | `m234 = m2 + m3 + m4 + Delta * sqrt(v)` |
+| `u_2` | Pair mass `m34` | `m34 = m3 + m4 + Delta * sqrt(v) * sqrt(1 - sqrt(1 - u_2))` |
+| `u_3` | Polar angle of `p1` in the total rest frame | `cos(theta_1) = 2u_3 - 1` |
+| `u_4` | Azimuth of `p1` in the total rest frame | `phi_1 = 2pi * u_4` |
+| `u_5` | Polar angle of `p2` in the `Q234` rest frame | `cos(theta_2) = 2u_5 - 1` |
+| `u_6` | Azimuth of `p2` in the `Q234` rest frame | `phi_2 = 2pi * u_6` |
+| `u_7` | Polar angle of `p3` in the `Q34` rest frame | `cos(theta_3) = 2u_7 - 1` |
+| `u_8` | Azimuth of `p3` in the `Q34` rest frame | `phi_3 = 2pi * u_8` |
+
+The axes are those used by the rotation-free boosts in the implementation. The
+polar angles are not automatically helicity angles along each cluster's flight direction.
+
+## Aligned four-vectors
+
+For `n >= 3`, overall spatial orientation can be fixed by choosing:
+
+- `p1` along **-z** in the total rest frame: `cos(theta_1) = -1` and `phi_1 = 0`;
+- `phi_2 = 0` in the `Q_{2...n}` rest frame, placing `p2` in the **xz plane with x >= 0**.
+
+The conventional polar angle for -z is `pi`; using `-pi` gives the same direction.
+These are three fixed angular coordinates, but they are **not three consecutive
+entries**: `theta_2` remains free. Since the first cluster travels along +z,
+its boost also leaves `p2` in the positive-x half of the xz plane in the total rest frame.
+
+The reduced input belongs to `[0, 1]^(3n - 7)`, with ordering:
+
+| Reduced inputs | Meaning |
+|:--|:--|
+| First `n - 2` | The same intermediate mass coordinates as the ordinary map |
+| Next one | Polar coordinate for `p2`: `cos(theta_2) = 2u - 1` |
+| Remaining `2(n - 3)` | Polar/azimuthal pairs for splittings `3, ..., n - 1` |
+
+For three bodies this is `[mass23, polar2]`; for four bodies it is
+`[mass234, mass34, polar2, polar3, azimuth3]`, where each entry is a unit-cube
+coordinate mapped as above.
+
+```@example aligned
+using Random, RamboOnDiet
+
+generator = PhaseSpaceGenerator([0.1, 0.2, 0.3, 0.4], 3.0)
+required_aligned_random_numbers(4) # 5
+
+# Random sampling, with an optional explicit RNG.
+point = generate_aligned_point(MersenneTwister(7), generator)
+
+# Deterministic map from the reduced unit cube.
+point = generate_aligned_from_unit_hypercube([0.3, 0.6, 0.4, 0.7, 0.2], generator)
+phase_space_weight(point)
+```
+
+Both methods also accept `(masses, sqrt_s)` or `(masses, total_fourvector)` in
+place of the generator. For a moving total, the entire aligned configuration is
+first built in the total rest frame and then boosted to the lab. The alignment
+conditions therefore apply in the total rest frame, not generally in the lab.
+At threshold or collinear boundaries, some directions are undefined and the
+orientation convention is degenerate.
+
+**Weights include the integrated overall orientation.** They have the same
+normalization as ordinary points; do not multiply them by another rotation-volume
+factor. Aligned samples are appropriate for observables invariant under overall
+rotations in the total rest frame. To model orientation-dependent observables,
+use the ordinary sampler or restore a uniformly sampled overall rotation.
+
+```@docs
+required_aligned_random_numbers
+generate_aligned_point
+generate_aligned_from_unit_hypercube
+```
