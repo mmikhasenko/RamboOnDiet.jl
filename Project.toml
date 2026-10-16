@@ -1,7 +1,7 @@
 name = "RamboOnDiet"
 uuid = "1cb55d97-0cb4-4390-8d6a-9cd22df9b4c4"
-authors = ["OpenAI Codex", "Misha Mikhasenko <mikhail.mikhasenko@gmail.com>"]
 version = "0.5.1"
+authors = ["OpenAI Codex", "Misha Mikhasenko <mikhail.mikhasenko@gmail.com>"]
 
 [deps]
 FourVectors = "b122eb78-8380-428a-b8c8-584a022ae8b6"
@@ -13,14 +13,14 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 [compat]
 FourVectors = "0.3.4"
 StaticArrays = "1"
-ThreeBodyDecays = "0.14"
+ThreeBodyDecays = "0.14, 0.15"
 julia = "1.10"
 
 [extras]
-ThreeBodyDecays = "e6563dab-9ca1-5843-bde3-2ccf38d63843"
 FHist = "68837c9b-b678-4cd5-9925-8a54edc8f695"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+ThreeBodyDecays = "e6563dab-9ca1-5843-bde3-2ccf38d63843"
 
 [targets]
 test = ["FHist", "Statistics", "Test", "ThreeBodyDecays"]
