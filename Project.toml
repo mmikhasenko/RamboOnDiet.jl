@@ -1,7 +1,7 @@
 name = "RamboOnDiet"
 uuid = "1cb55d97-0cb4-4390-8d6a-9cd22df9b4c4"
 version = "0.5.1"
-authors = ["OpenAI Codex", "Misha Mikhasenko <mikhail.mikhasenko@gmail.com>"]
+authors = ["Misha Mikhasenko <mikhail.mikhasenko@gmail.com>"]
 
 [deps]
 FourVectors = "b122eb78-8380-428a-b8c8-584a022ae8b6"
@@ -14,7 +14,7 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 FourVectors = "0.3.4"
 LorentzVectorBase = "0.1"
 StaticArrays = "1"
-ThreeBodyDecays = "0.14"
+ThreeBodyDecays = "0.14, 0.15"
 julia = "1.10"
 
 [extras]
