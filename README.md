@@ -80,7 +80,3 @@ splittings. Weights include the integrated overall orientation. See the
 Above threshold, mass coordinates must be strictly between 0 and 1; angular
 coordinates may include both endpoints. Random samplers redraw exact-zero mass
 inputs; deterministic maps throw `DomainError` for mass endpoints.
-
-## ThreeBodyDecays 0.16
-
-Tests and the three-body documentation example use ThreeBodyDecays 0.16. The coordinate-map and phase-space APIs used here are unchanged.
