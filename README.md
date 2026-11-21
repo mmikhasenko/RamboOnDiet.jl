@@ -41,6 +41,16 @@ Then open `docs/build/index.html`. After editing a tutorial `.jl` file, regenera
 and commit its Markdown in `docs/src/generated/`. CI runs only `docs/make.jl`;
 it builds the committed Markdown and executes its Documenter examples.
 
+## Public help
+
+Build a `PhaseSpaceGenerator` from the daughter masses and the total energy or four-momentum, draw an event with `generate_point` or `rand`, and read `phase_space_weight` before using the momenta. Chosen coordinates go through `generate_from_unit_hypercube`. When the observable is invariant under the overall rotation, use `generate_aligned_point` or `generate_aligned_from_unit_hypercube`. Each help page links to the next call.
+
+```bash
+julia --project scripts/audit_documentation.jl
+```
+
+The link map is written to [docs/discoverability_graph.md](docs/discoverability_graph.md).
+
 ## Quick Start
 
 ```julia
@@ -61,6 +71,7 @@ Two-body alignment needs no coordinates: particle 1 points along +z and particle
 along -z in the center-of-mass frame.
 
 ```julia
+using RamboOnDiet
 point = generate_aligned_from_unit_hypercube(Float64[], PhaseSpaceGenerator([0.3, 0.5], 2.0))
 ```
 
@@ -68,6 +79,8 @@ For `n >= 3`, fix the overall orientation with particle 1 along -z and particle 
 in the xz plane with nonnegative x, in the total rest frame:
 
 ```julia
+using RamboOnDiet
+generator = PhaseSpaceGenerator([0.93827208816, 0.493677, 0.13957039], 2.28646)
 point = generate_aligned_point(generator)
 point = generate_aligned_from_unit_hypercube([0.4, 0.6], generator) # three bodies
 ```

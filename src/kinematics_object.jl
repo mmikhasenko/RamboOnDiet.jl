@@ -1,3 +1,39 @@
+"""
+    PhaseSpaceGenerator(masses, sqrt_s)
+    PhaseSpaceGenerator(masses, total::FourVector)
+
+Parent process for an `n`-body RAMBO-on-diet sampler.
+
+`masses` are the outgoing masses and `sqrt_s` is the center-of-mass energy,
+in one common energy unit. Pass a `FourVector` as `total` when the parent is
+moving; its components use that same unit. The object stores `generator.masses`,
+`generator.total`, `generator.invariant_mass`, and `generator.threshold`
+(the sum of the masses). `length(generator)` is the number of daughters.
+The ordinary map reads `generator.random_numbers` coordinates, which is `3n - 4`.
+
+Draw the first event with [`generate_point`](@ref). `rand(generator)` calls
+that function. Fixed coordinates use [`generate_from_unit_hypercube`](@ref).
+
+```julia
+using RamboOnDiet
+generator = PhaseSpaceGenerator([0.3, 0.4, 0.5], 2.0)
+generator.masses, generator.threshold, generator.random_numbers
+```
+
+```julia
+using RamboOnDiet, FourVectors
+total = FourVector(0.2, 0.0, 0.3; E = 2.1)
+generator = PhaseSpaceGenerator([0.3, 0.4, 0.5], total)
+generator.total, generator.invariant_mass
+```
+
+## Related
+
+- [`generate_point`](@ref) — draw one event from this parent
+- [`generate_from_unit_hypercube`](@ref) — map a chosen unit-cube vector
+- [`generate_aligned_point`](@ref) — draw an event with the overall rotation fixed
+- [`generate_aligned_from_unit_hypercube`](@ref) — map the shorter aligned coordinates
+"""
 struct PhaseSpaceGenerator{T,N,M<:AbstractVector{T}}
     masses::M
     total::FourVector{T}
