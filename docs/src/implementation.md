@@ -146,3 +146,13 @@ The tests compare all three invariants `(s23, s31, s12)` and the phase-space wei
 including `dx1/du1` and the reference normalization factor `pi²/4`. They cover
 massless, massive, mixed-mass, and near-threshold configurations, including both
 polar endpoints. `ThreeBodyDecays` is a test dependency, not a runtime dependency.
+
+## Maintaining the help pages
+
+Public docstrings are checked with one script. It runs each example and rewrites the help-link graph:
+
+```bash
+julia --project scripts/audit_documentation.jl
+```
+
+The script writes `docs/discoverability_graph.md`. That file records which help pages lead to which, for people changing the API. It is not part of the user guide.

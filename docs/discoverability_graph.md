@@ -1,6 +1,6 @@
 # Discoverability graph
 
-Help links between the exported names of `RamboOnDiet`. An arrow points from a help page to a page a reader can open next. The entry point is `RamboOnDiet`, which a reader opens by name. Any other name with no incoming link is hard to find. A name with no outgoing link is a dead end. Every exported name needs an outgoing link and a path from the entry point.
+Maintainer map of help links between exported names. An arrow points from a help page to the page a reader opens next. The entry point is `RamboOnDiet`. Any other name with no incoming link is hard to find. A name with no outgoing link is a dead end. Every exported name needs an outgoing link and a path from the entry point. This file is not part of the user guide.
 
 ```mermaid
 flowchart LR

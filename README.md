@@ -41,16 +41,6 @@ Then open `docs/build/index.html`. After editing a tutorial `.jl` file, regenera
 and commit its Markdown in `docs/src/generated/`. CI runs only `docs/make.jl`;
 it builds the committed Markdown and executes its Documenter examples.
 
-## Public help
-
-Build a `PhaseSpaceGenerator` from the daughter masses and the total energy or four-momentum, draw an event with `generate_point` or `rand`, and read `phase_space_weight` before using the momenta. Chosen coordinates go through `generate_from_unit_hypercube`. When the observable is invariant under the overall rotation, use `generate_aligned_point` or `generate_aligned_from_unit_hypercube`. Each help page links to the next call.
-
-```bash
-julia --project scripts/audit_documentation.jl
-```
-
-The link map is written to [docs/discoverability_graph.md](docs/discoverability_graph.md).
-
 ## Quick Start
 
 ```julia
