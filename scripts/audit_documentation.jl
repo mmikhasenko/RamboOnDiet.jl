@@ -15,8 +15,8 @@ import LinearAlgebra
 import Random
 import StaticArrays
 
-# The module page is the help entry a reader opens first. It points at the generator.
-const ENTRY_POINT = :RamboOnDiet
+# `?RamboOnDiet` shows README.md. The help-page graph starts at the generator.
+const ENTRY_POINT = :PhaseSpaceGenerator
 
 const DEPENDENCIES =
     (FourVectors, LorentzVectorBase, StaticArrays, LinearAlgebra, Random, Base)
@@ -84,7 +84,8 @@ function links_in(text::AbstractString)
 end
 
 function exported_names()
-    return sort!(collect(names(RamboOnDiet)))
+    # The module binding is not a callable help page.
+    return sort!(filter(n -> n !== nameof(RamboOnDiet), collect(names(RamboOnDiet))))
 end
 
 function is_local_package_link(link::Link)

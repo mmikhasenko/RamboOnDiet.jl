@@ -68,7 +68,6 @@ helper computed a pair invariant mass squared, now written directly as
 `mass2(point[i] + point[j])`.
 
 ```@docs
-RamboOnDiet
 PhaseSpaceGenerator
 generate_point
 generate_from_unit_hypercube

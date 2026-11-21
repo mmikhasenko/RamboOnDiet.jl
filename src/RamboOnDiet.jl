@@ -1,22 +1,3 @@
-"""
-    RamboOnDiet
-
-Relativistic `n`-body phase-space sampler using the RAMBO-on-diet map.
-Daughter masses and the total energy are in one common energy unit.
-
-Load the package and build a [`PhaseSpaceGenerator`](@ref). The masses are
-`generator.masses`; draw an event from that object next.
-
-```julia
-using RamboOnDiet
-generator = PhaseSpaceGenerator([0.3, 0.4, 0.5], 2.0)
-generator.masses
-```
-
-## Related
-
-- [`PhaseSpaceGenerator`](@ref) — set the masses and the total four-momentum
-"""
 module RamboOnDiet
 
 using LinearAlgebra

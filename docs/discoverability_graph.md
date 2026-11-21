@@ -1,6 +1,6 @@
 # Discoverability graph
 
-Maintainer map of help links between exported names. An arrow points from a help page to the page a reader opens next. The entry point is `RamboOnDiet`. Any other name with no incoming link is hard to find. A name with no outgoing link is a dead end. Every exported name needs an outgoing link and a path from the entry point. This file is not part of the user guide.
+Maintainer map of help links between exported names. An arrow points from a help page to the page a reader opens next. The entry point is `PhaseSpaceGenerator`. Any other name with no incoming link is hard to find. A name with no outgoing link is a dead end. Every exported name needs an outgoing link and a path from the entry point. This file is not part of the user guide.
 
 ```mermaid
 flowchart LR
@@ -13,7 +13,6 @@ flowchart LR
     PhaseSpacePoint --> generate_from_unit_hypercube
     PhaseSpacePoint --> generate_point
     PhaseSpacePoint --> phase_space_weight
-    RamboOnDiet --> PhaseSpaceGenerator
     generate_aligned_from_unit_hypercube --> PhaseSpaceGenerator
     generate_aligned_from_unit_hypercube --> PhaseSpacePoint
     generate_aligned_from_unit_hypercube --> generate_aligned_point
@@ -41,9 +40,8 @@ flowchart LR
 
 | Name | Incoming | Outgoing |
 | --- | ---: | ---: |
-| PhaseSpaceGenerator | 5 | 4 |
+| PhaseSpaceGenerator (entry) | 4 | 4 |
 | PhaseSpacePoint | 5 | 5 |
-| RamboOnDiet (entry) | 0 | 1 |
 | generate_aligned_from_unit_hypercube | 4 | 5 |
 | generate_aligned_point | 3 | 5 |
 | generate_from_unit_hypercube | 4 | 5 |
