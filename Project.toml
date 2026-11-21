@@ -1,6 +1,6 @@
 name = "RamboOnDiet"
 uuid = "1cb55d97-0cb4-4390-8d6a-9cd22df9b4c4"
-version = "0.6.0"
+version = "0.5.1"
 authors = ["Misha Mikhasenko <mikhail.mikhasenko@gmail.com>"]
 
 [deps]
