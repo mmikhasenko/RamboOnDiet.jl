@@ -67,6 +67,17 @@ and are not part of the supported public API. In particular, the old `mandelstam
 helper computed a pair invariant mass squared, now written directly as
 `mass2(point[i] + point[j])`.
 
+```@docs
+RamboOnDiet
+PhaseSpaceGenerator
+generate_point
+generate_from_unit_hypercube
+generate_aligned_point
+generate_aligned_from_unit_hypercube
+PhaseSpacePoint
+phase_space_weight
+```
+
 ```@contents
 Pages = ["algorithm.md", "implementation.md", "edge-cases.md", "generated/three-body.md", "generated/b-decay.md"]
 Depth = 2

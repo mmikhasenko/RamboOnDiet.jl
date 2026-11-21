@@ -278,8 +278,3 @@ normalization as ordinary points; do not multiply them by another rotation-volum
 factor. Aligned samples are appropriate for observables invariant under overall
 rotations in the total rest frame. To model orientation-dependent observables,
 use the ordinary sampler or restore a uniformly sampled overall rotation.
-
-```@docs
-generate_aligned_point
-generate_aligned_from_unit_hypercube
-```

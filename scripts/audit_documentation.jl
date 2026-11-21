@@ -18,14 +18,8 @@ import StaticArrays
 # The module page is the help entry a reader opens first. It points at the generator.
 const ENTRY_POINT = :RamboOnDiet
 
-const DEPENDENCIES = (
-    FourVectors,
-    LorentzVectorBase,
-    StaticArrays,
-    LinearAlgebra,
-    Random,
-    Base,
-)
+const DEPENDENCIES =
+    (FourVectors, LorentzVectorBase, StaticArrays, LinearAlgebra, Random, Base)
 
 const REF_RE = r"\[`([^`]+)`\]\(@ref(?:\s[^)]*)?\)"
 const JULIA_FENCE_RE = r"^[ \t]*```julia[ \t]*\r?\n(.*?)^[ \t]*```"sm
@@ -68,7 +62,7 @@ function dedent(code::AbstractString)
     end
     width == typemax(Int) && return ""
     stripped = map(lines) do line
-        return length(line) ≤ width ? "" : line[(width + 1):end]
+        return length(line) ≤ width ? "" : line[(width+1):end]
     end
     return join(stripped, "\n")
 end
@@ -177,10 +171,7 @@ function counts_table(exports, edges)
             incoming[target] += 1
         end
     end
-    lines = String[
-        "| Name | Incoming | Outgoing |",
-        "| --- | ---: | ---: |",
-    ]
+    lines = String["| Name | Incoming | Outgoing |", "| --- | ---: | ---: |"]
     for name in exports
         label = name === ENTRY_POINT ? "$(name) (entry)" : string(name)
         push!(lines, "| $(label) | $(incoming[name]) | $(length(edges[name])) |")
@@ -268,7 +259,10 @@ function audit()
         end
         related = related_body(text)
         if related === nothing
-            push!(failures, "$(name) needs one ## Related section at the end of the docstring")
+            push!(
+                failures,
+                "$(name) needs one ## Related section at the end of the docstring",
+            )
         elseif isempty(links_in(related))
             push!(failures, "$(name) ## Related section has no [`name`](@ref) link")
         end
@@ -277,7 +271,10 @@ function audit()
             if is_local_package_link(link)
                 if isdefined(RamboOnDiet, link.name)
                     if !has_docs(RamboOnDiet, link.name)
-                        push!(failures, "$(name) links to [`$(link.raw)`](@ref), which has no docstring")
+                        push!(
+                            failures,
+                            "$(name) links to [`$(link.raw)`](@ref), which has no docstring",
+                        )
                     end
                 else
                     home = foreign_home(link.name)
@@ -304,7 +301,9 @@ function audit()
                     home = mod
                     break
                 end
-                if home === nothing || !isdefined(home, link.name) || !has_docs(home, link.name)
+                if home === nothing ||
+                   !isdefined(home, link.name) ||
+                   !has_docs(home, link.name)
                     push!(
                         failures,
                         "$(name) links to [`$(link.raw)`](@ref), which is not a documented name in that package",
@@ -359,7 +358,9 @@ function audit()
     print_graph(exports, edges)
 
     if isempty(failures)
-        println("Audit passed for $(length(exports)) exports. Graph written to $(graph_path).")
+        println(
+            "Audit passed for $(length(exports)) exports. Graph written to $(graph_path).",
+        )
         return 0
     end
     println(stderr, "Audit failed ($(length(failures))):")

@@ -9,7 +9,8 @@ is the phase-space weight, both in the energy unit of the parent generator.
 Samplers return this object. Read the daughters with `point.momenta` or
 `point[i]`, and the stored weight with `point.weight`. The event in the
 example comes from [`generate_point`](@ref). Form a pair invariant with
-[`mass2`](@ref), or read the Monte Carlo factor with [`phase_space_weight`](@ref).
+`mass2` from FourVectors, or read the Monte Carlo factor with
+[`phase_space_weight`](@ref).
 
 ```julia
 using RamboOnDiet, FourVectors
@@ -24,7 +25,6 @@ mass2(point[2] + point[3])
 - [`generate_aligned_point`](@ref) — draw an event with the overall rotation fixed
 - [`generate_aligned_from_unit_hypercube`](@ref) — build an aligned event from reduced coordinates
 - [`phase_space_weight`](@ref) — Monte Carlo weight stored on this event
-- [`mass2`](@ref) — squared invariant mass of a daughter or of a pair sum
 """
 struct PhaseSpacePoint{T}
     momenta::Vector{FourVector{T}}
