@@ -10,6 +10,32 @@ function resample_mass_zeros!(rng::AbstractRNG, rs::AbstractVector, n_mass::Inte
     return rs
 end
 
+"""
+    generate_point([rng], generator::PhaseSpaceGenerator)
+    generate_point([rng], masses, sqrt_s)
+
+Draw one `n`-body phase-space event. Masses and `sqrt_s` use one energy unit.
+`rand([rng], generator)` calls this function.
+
+Build the parent with [`PhaseSpaceGenerator`](@ref), or pass masses and
+`sqrt_s` for a parent at rest. The result is a [`PhaseSpacePoint`](@ref).
+Read the daughters from `point.momenta` or `point[i]`, then the Monte Carlo
+weight with [`phase_space_weight`](@ref).
+
+```julia
+using RamboOnDiet
+generator = PhaseSpaceGenerator([0.3, 0.4, 0.5], 2.0)
+point = generate_point(generator)
+point.momenta
+```
+
+## Related
+
+- [`PhaseSpaceGenerator`](@ref) — masses and the total four-momentum
+- [`PhaseSpacePoint`](@ref) — momenta and weight returned by this draw
+- [`phase_space_weight`](@ref) — weight to accumulate for this event
+- [`generate_from_unit_hypercube`](@ref) — run the same map at fixed coordinates
+"""
 function generate_point(rng::AbstractRNG, generator::PhaseSpaceGenerator{T}) where {T}
     n = length(generator)
     rs = rand(rng, T, required_random_numbers(n))
@@ -41,6 +67,34 @@ generate_point(masses::AbstractVector{<:Real}, sqrt_s::Real) =
 generate_momenta(masses::AbstractVector{<:Real}, total::FourVector) =
     generate_momenta(Random.default_rng(), masses, total)
 
+"""
+    generate_from_unit_hypercube(rs, generator::PhaseSpaceGenerator)
+    generate_from_unit_hypercube(rs, masses, total::FourVector)
+
+Map one unit-cube vector to one phase-space event. Masses and the total
+energy use one energy unit.
+
+Build the parent with [`PhaseSpaceGenerator`](@ref). `rs` has length
+`generator.random_numbers` (`3n - 4`): the first `n - 2` entries are mass
+coordinates and lie in `(0, 1)` above threshold, and the rest are angles in
+`[0, 1]`. The map returns a [`PhaseSpacePoint`](@ref). Read `point.weight`,
+or call [`phase_space_weight`](@ref), before using the daughters.
+
+```julia
+using RamboOnDiet
+generator = PhaseSpaceGenerator([0.3, 0.4, 0.5], 2.0)
+point = generate_from_unit_hypercube([0.3, 0.2, 0.7, 0.4, 0.9], generator)
+point.weight
+```
+
+## Related
+
+- [`PhaseSpaceGenerator`](@ref) — masses, total momentum, and the coordinate count
+- [`generate_point`](@ref) — draw those coordinates at random
+- [`generate_aligned_from_unit_hypercube`](@ref) — pass the `3n - 7` aligned coordinates
+- [`PhaseSpacePoint`](@ref) — momenta and weight for this coordinate
+- [`phase_space_weight`](@ref) — Monte Carlo weight of this coordinate
+"""
 function generate_from_unit_hypercube(
     rs::AbstractVector{<:Real},
     generator::PhaseSpaceGenerator{T},
@@ -178,11 +232,31 @@ end
     generate_aligned_point([rng], generator)
     generate_aligned_point([rng], masses, total_or_sqrt_s)
 
-Sample an aligned phase-space point, redrawing exact-zero mass coordinates.
-For two bodies, no random numbers are needed: particle 1 points along +z and
-particle 2 along -z in the total rest frame. For three or more bodies, particle 1
-points along -z and particle 2 lies in the xz plane with nonnegative x. The weight
-includes the integrated overall orientation, as in the ordinary generator.
+Draw one event with the overall rotation fixed. Masses and the total energy
+use one energy unit.
+
+The parent is a [`PhaseSpaceGenerator`](@ref). Two bodies draw no random
+numbers: in the total rest frame, particle 1 points along +z and particle 2
+along -z. For three or more bodies, particle 1 points along -z and particle 2
+lies in the xz plane with nonnegative x. The sampler draws `3n - 7`
+coordinates and redraws an exact-zero mass coordinate. The returned
+[`PhaseSpacePoint`](@ref) uses the ordinary normalization, with that rotation
+integrated into [`phase_space_weight`](@ref).
+
+```julia
+using RamboOnDiet
+generator = PhaseSpaceGenerator([0.3, 0.4, 0.5], 2.0)
+point = generate_aligned_point(generator)
+point[1]
+```
+
+## Related
+
+- [`PhaseSpaceGenerator`](@ref) — masses and the total four-momentum
+- [`generate_aligned_from_unit_hypercube`](@ref) — supply the reduced coordinates yourself
+- [`generate_point`](@ref) — sample the overall rotation as well
+- [`PhaseSpacePoint`](@ref) — aligned momenta and the stored weight
+- [`phase_space_weight`](@ref) — orientation-integrated weight of this draw
 """
 function generate_aligned_point(
     rng::AbstractRNG,
@@ -205,18 +279,37 @@ generate_aligned_point(masses, total_or_sqrt_s) =
     generate_aligned_from_unit_hypercube(rs, generator)
     generate_aligned_from_unit_hypercube(rs, masses, total_or_sqrt_s)
 
-For two bodies, pass an empty vector: particle 1 points along +z and particle 2
-along -z in the total rest frame. For `n >= 3`, map `3n - 7` coordinates to an
-aligned n-body point.
-Above threshold, mass coordinates must be strictly in `(0, 1)` (otherwise a
-`DomainError` is thrown); angular coordinates may include both endpoints of `[0, 1]`.
-At the total threshold, any finite unit-cube inputs give the threshold configuration.
-The first `n - 2` inputs set cluster masses, the next sets `cos(theta_2)`,
-and the rest alternate polar and azimuthal coordinates for splittings 3 onward.
-Fix `cos(theta_1) = -1`, `phi_1 = 0`, and `phi_2 = 0` in the total rest frame.
-For a moving total, boost the completed rest-frame configuration to the lab.
-Weights retain the full phase-space normalization with overall rotations integrated
-out; use these points for observables invariant under overall rest-frame rotations.
+Map reduced unit-cube coordinates to one aligned event. Masses and the total
+energy use one energy unit.
+
+Build a [`PhaseSpaceGenerator`](@ref) first. For two bodies, pass an empty
+vector: particle 1 points along +z and particle 2 along -z in the total rest
+frame. For `n ≥ 3`, `rs` has length `3n - 7`. The first `n - 2` entries set
+the cluster masses and lie in `(0, 1)` above threshold. The next entry is the
+polar coordinate of particle 2, and the rest are polar/azimuthal pairs for the
+later splittings. Angles may be 0 or 1. A moving `generator.total` is applied
+after the rest-frame configuration is built. The result is a [`PhaseSpacePoint`](@ref).
+
+```julia
+using RamboOnDiet
+two_body = PhaseSpaceGenerator([0.3, 0.5], 2.0)
+generate_aligned_from_unit_hypercube(Float64[], two_body)
+```
+
+```julia
+using RamboOnDiet
+generator = PhaseSpaceGenerator([0.3, 0.4, 0.5], 2.0)
+point = generate_aligned_from_unit_hypercube([0.4, 0.6], generator)
+point.momenta
+```
+
+## Related
+
+- [`PhaseSpaceGenerator`](@ref) — masses and the total four-momentum being decayed
+- [`generate_aligned_point`](@ref) — draw the reduced coordinates at random
+- [`generate_from_unit_hypercube`](@ref) — keep the overall rotation and pass `3n - 4` coordinates
+- [`PhaseSpacePoint`](@ref) — momenta and weight for these coordinates
+- [`phase_space_weight`](@ref) — weight with the overall rotation integrated out
 """
 function generate_aligned_from_unit_hypercube(
     rs::AbstractVector{<:Real},

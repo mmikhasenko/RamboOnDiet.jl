@@ -1,5 +1,31 @@
 const Vec3{T} = SVector{3,T}
 
+"""
+    PhaseSpacePoint(momenta, weight)
+
+One generated event. `momenta` holds the daughter four-momenta and `weight`
+is the phase-space weight, both in the energy unit of the parent generator.
+
+Samplers return this object. Read the daughters with `point.momenta` or
+`point[i]`, and the stored weight with `point.weight`. The event in the
+example comes from [`generate_point`](@ref). Form a pair invariant with
+`mass2` from FourVectors, or read the Monte Carlo factor with
+[`phase_space_weight`](@ref).
+
+```julia
+using RamboOnDiet, FourVectors
+point = generate_point(PhaseSpaceGenerator([0.3, 0.4, 0.5], 2.0))
+mass2(point[2] + point[3])
+```
+
+## Related
+
+- [`generate_point`](@ref) — draw a random event
+- [`generate_from_unit_hypercube`](@ref) — build an event from unit-cube coordinates
+- [`generate_aligned_point`](@ref) — draw an event with the overall rotation fixed
+- [`generate_aligned_from_unit_hypercube`](@ref) — build an aligned event from reduced coordinates
+- [`phase_space_weight`](@ref) — Monte Carlo weight stored on this event
+"""
 struct PhaseSpacePoint{T}
     momenta::Vector{FourVector{T}}
     weight::T
@@ -9,6 +35,29 @@ Base.length(point::PhaseSpacePoint) = length(point.momenta)
 Base.getindex(point::PhaseSpacePoint, i::Int) = point.momenta[i]
 Base.iterate(point::PhaseSpacePoint, state...) = iterate(point.momenta, state...)
 
+"""
+    phase_space_weight(point::PhaseSpacePoint)
+
+Phase-space weight of one event, in energy to the power `2n - 4`, where
+`n` is `length(point)`.
+
+Pass a [`PhaseSpacePoint`](@ref) from [`generate_point`](@ref) or from a
+unit-cube map. The value is the `point.weight` field. Massless events of a
+given multiplicity share one constant; massive events carry the RAMBO-on-diet
+Jacobian. Use the weight as the Monte Carlo factor, then read the daughters
+from `point.momenta` or `point[i]`.
+
+```julia
+using RamboOnDiet
+point = generate_point(PhaseSpaceGenerator([0.3, 0.4, 0.5], 2.0))
+phase_space_weight(point)
+```
+
+## Related
+
+- [`PhaseSpacePoint`](@ref) — daughter momenta on `point.momenta` and `point[i]`
+- [`generate_point`](@ref) — draw another weighted event
+"""
 phase_space_weight(point::PhaseSpacePoint) = point.weight
 
 @inline spatial(p::FourVector{T}) where {T} =
