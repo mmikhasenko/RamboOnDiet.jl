@@ -78,7 +78,7 @@ phase_space_weight
 ```
 
 ```@contents
-Pages = ["algorithm.md", "implementation.md", "edge-cases.md", "generated/three-body.md", "generated/b-decay.md"]
+Pages = ["algorithm.md", "implementation.md", "edge-cases.md", "generated/three-body.md", "generated/b-decay.md", "generated/four-body-mass-window.md", "maintainers.md"]
 Depth = 2
 ```
 
@@ -89,3 +89,5 @@ Depth = 2
 - [Edge cases](edge-cases.md)
 - [Three-body generation and Dalitz processing](generated/three-body.md)
 - [B decay cascade and Arrow export](generated/b-decay.md)
+- [Four-body sampling in a three-pion mass window](generated/four-body-mass-window.md)
+- [For maintainers](maintainers.md)

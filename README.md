@@ -17,7 +17,7 @@ use `generate_aligned_point` or `generate_aligned_from_unit_hypercube`.
 
 ```julia
 using Pkg
-Pkg.add(url = "https://github.com/mmikhasenko/RamboOnDiet.jl")
+Pkg.add("RamboOnDiet")
 ```
 
 [`FourVectors.jl`](https://github.com/JuliaHEP/FourVectors.jl) is a dependency.
@@ -92,20 +92,3 @@ The coordinate tables are in the
 [algorithm notes](docs/src/algorithm.md#aligned-four-vectors).
 Random samplers redraw an exact-zero mass input. Deterministic maps throw
 `DomainError` for a mass endpoint. Angular coordinates may include both endpoints.
-
-## Documentation
-
-- [Documentation website](https://mmikhasenko.github.io/RamboOnDiet.jl/)
-- [Manual overview](docs/src/index.md)
-- [Three-body tutorial](docs/src/generated/three-body.md)
-- [B decay cascade and Arrow export](docs/src/generated/b-decay.md)
-
-Build the rendered manual locally with:
-
-```bash
-julia --project=docs docs/generate.jl
-julia --project=docs docs/make.jl
-```
-
-Then open `docs/build/index.html`. After editing a tutorial `.jl` file, regenerate
-and commit its Markdown in `docs/src/generated/`. CI runs only `docs/make.jl`.
