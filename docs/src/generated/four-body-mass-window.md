@@ -18,7 +18,7 @@ d\Phi_4
 \prod_i \frac{d^{3}p_i}{2 E_i},
 ```
 
-without factors of `2π`, the same convention as [`phase_space_weight`](@ref).
+without factors of `2π`, the same convention as `phase_space_weight`.
 The events stay weighted. Absolute massive weights in this normalization
 require RamboOnDiet v0.5.0 or later.
 
@@ -104,10 +104,11 @@ generator's convention, without factors of `2π`.
 Gauss–Legendre rules of 64 and 128 nodes check that this integral has settled.
 
 ````julia
-phi2(M, a, b) = π * sqrt(max(0.0, (M - a - b) * (M + a + b) * (M - a + b) * (M + a - b))) / (2M^2)
+phi2(M, a, b) =
+    π * sqrt(max(0.0, (M - a - b) * (M + a + b) * (M - a + b) * (M + a - b))) / (2M^2)
 
 function gauss_legendre(n)
-    off_diagonal = [k / sqrt(4k^2 - 1) for k in 1:(n - 1)]
+    off_diagonal = [k / sqrt(4k^2 - 1) for k = 1:(n-1)]
     decomposition = eigen(SymTridiagonal(zeros(n), off_diagonal))
     return decomposition.values, 2 .* decomposition.vectors[1, :] .^ 2
 end
@@ -116,7 +117,8 @@ function integrate(f, lower, upper, rule)
     nodes, weights = rule
     midpoint = (lower + upper) / 2
     half_width = (upper - lower) / 2
-    return half_width * sum(weights[k] * f(midpoint + half_width * nodes[k]) for k in eachindex(nodes))
+    return half_width *
+           sum(weights[k] * f(midpoint + half_width * nodes[k]) for k in eachindex(nodes))
 end
 
 function spectrum(m, rule)
@@ -127,7 +129,10 @@ function spectrum(m, rule)
 end
 
 function reference_bins(edges, rule)
-    return [integrate(m -> spectrum(m, rule), edges[b], edges[b + 1], rule) for b in 1:(length(edges) - 1)]
+    return [
+        integrate(m -> spectrum(m, rule), edges[b], edges[b+1], rule) for
+        b = 1:(length(edges)-1)
+    ]
 end
 ````
 
@@ -143,9 +148,11 @@ function internal_angles(m3pi, m12, m23)
     sigma3, sigma1 = m12^2, m23^2
     sigma2 = s + 3mu - sigma1 - sigma3
     kallen(a, b, c) = a^2 + b^2 + c^2 - 2(a * b + a * c + b * c)
-    cosine(pair, cross) = (2pair * (cross - 2mu) - pair * (s - pair - mu)) /
+    cosine(pair, cross) =
+        (2pair * (cross - 2mu) - pair * (s - pair - mu)) /
         sqrt(max(0.0, kallen(pair, mu, mu) * kallen(s, pair, mu)))
-    cos_z = ((s + mu - sigma1) * (s + mu - sigma3) - 2s * (sigma2 - 2mu)) /
+    cos_z =
+        ((s + mu - sigma1) * (s + mu - sigma3) - 2s * (sigma2 - 2mu)) /
         sqrt(max(0.0, kallen(s, mu, sigma1) * kallen(s, mu, sigma3)))
     return (
         acos(clamp(cosine(sigma3, sigma2), -1, 1)),
@@ -197,7 +204,7 @@ function sample_window(; n = 100_000, seed = 20261021)
     minmass, maxmass = Inf, -Inf
     shell_error = conservation_error = map_error = angle_error = 0.0
     positive_weights = finite_angles = true
-    for _ in 1:n
+    for _ = 1:n
         event, weight, u1 = restricted_event(rng)
         momenta = event.momenta
         parent = sum(momenta)
@@ -225,9 +232,20 @@ function sample_window(; n = 100_000, seed = 20261021)
         sums2[bin] += weight^2
     end
     return (;
-        n, seed, edges, counts, sums, sums2, minmass, maxmass,
-        shell_error, conservation_error, map_error, angle_error,
-        positive_weights, finite_angles,
+        n,
+        seed,
+        edges,
+        counts,
+        sums,
+        sums2,
+        minmass,
+        maxmass,
+        shell_error,
+        conservation_error,
+        map_error,
+        angle_error,
+        positive_weights,
+        finite_angles,
     )
 end
 ````
