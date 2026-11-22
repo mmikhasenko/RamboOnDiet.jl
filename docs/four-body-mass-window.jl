@@ -1,10 +1,13 @@
 # # Four-body sampling in a three-pion mass window
 #
 # A 190 GeV/c π− beam on a proton at rest produces `[recoil, π−, π+, π−]`.
-# In the four-body map the first unit-cube coordinate is the three-pion cluster
-# mass. Drawing that coordinate from the image of `[1.02, 1.7] GeV`, and
-# multiplying the weight by the width of the interval, keeps every event inside
-# the window.
+# Particle 1 is the recoil. In the
+# [four-body coordinate table](../algorithm.md#Four-bodies),
+# `u₁` is the mass of the cluster formed by particles 2, 3, and 4, so here it
+# is the three-pion mass. A different mass order windows a different cluster.
+#
+# Drawing `u₁` from the image of `[1.02, 1.7] GeV` keeps every event inside the
+# window. The weight is multiplied by the width of that coordinate interval.
 #
 # The weighted sample estimates the restricted measure
 #
@@ -15,12 +18,7 @@
 # ```
 #
 # without factors of `2π`, the same convention as `phase_space_weight`.
-# The events stay weighted. Absolute massive weights in this normalization
-# require RamboOnDiet v0.5.0 or later.
-#
-# The numbers on this page were produced locally from
-# `docs/four-body-mass-window.jl` and committed with the manual. Building the
-# documentation does not rerun the sample.
+# Absolute massive weights in this normalization require RamboOnDiet v0.5.0 or later.
 
 # ## Beam and window
 #
@@ -75,10 +73,15 @@ Page(note) #hide
 
 # ## One event inside the window
 #
-# Replace the first coordinate by a uniform draw on `[u_a, u_b]` and multiply
-# the generator weight by `u_b - u_a`. The second coordinate is the remaining
-# mass input and has to stay in the open unit interval. The daughters come out
-# as `[recoil, π−, π+, π−]`.
+# `generate_from_unit_hypercube` takes each coordinate as uniform on `(0, 1)`,
+# where the density in `u₁` is 1. A uniform draw on the subinterval `[u_a, u_b]`
+# has density `1/(u_b - u_a)` instead. Multiplying `phase_space_weight` by
+# `u_b - u_a` cancels that density and restores the phase-space measure on the
+# window. The events stay weighted: the factor is the Jacobian of the
+# restriction, not an accept/reject decision.
+#
+# The second coordinate is the remaining mass input and has to stay in the open
+# unit interval. The daughters come out as `[recoil, π−, π+, π−]`.
 
 function restricted_event(rng)
     coordinates = rand(rng, 8)
@@ -139,12 +142,7 @@ function reference_bins(edges, rule)
 end
 nothing #hide
 
-# ## Angle cross-check
-#
-# Pair masses determine the three-pion decay angles. An independent boost of the
-# Cartesian momenta has to reproduce those angles. The comparison uses cyclic
-# `(12)3` and `(23)1` conventions and does not enter the weights.
-
+## @hide-start
 function internal_angles(m3pi, m12, m23)
     s, mu = m3pi^2, mpi^2
     sigma3, sigma1 = m12^2, m23^2
@@ -191,12 +189,13 @@ function angle_discrepancy(momenta, m3pi)
     from_boosts = cartesian_angles(momenta[2], momenta[3], momenta[4])
     return maximum(abs.(from_masses .- from_boosts)), all(isfinite, from_masses)
 end
-nothing #hide
+nothing
+## @hide-end
 
 # ## Sample
 #
-# One hundred thousand events, seed `20261021`. Raw counts follow the restricted
-# cube map. The weights estimate the absolute integral of `d\Phi_4` in each mass bin.
+# One hundred thousand events, seed `20261021`. The weights estimate the
+# absolute integral of `d\Phi_4` in each mass bin.
 
 function sample_window(; n = 100_000, seed = 20261021)
     rng = MersenneTwister(seed)
@@ -256,6 +255,11 @@ nothing #hide
 # The table compares the weighted Monte Carlo integral in each bin with the
 # 128-point quadrature. Pulls use the Monte Carlo standard error. A second rule,
 # with 64 points, checks the quadrature itself.
+#
+# Raw counts rise toward the upper edge of the window because the map from `u₁`
+# to the three-pion mass is nonlinear. Those counts follow the restricted cube
+# map. The weighted fraction is the column that should match the reference
+# fraction.
 
 ## @hide-start
 grouped(x) = replace(string(round(Int, x)), r"(?<=[0-9])(?=(?:[0-9]{3})+$)" => ",")

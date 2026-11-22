@@ -105,12 +105,9 @@ the page and does not rerun it.
 
 ## Documentation
 
-- [Documentation website](https://mmikhasenko.github.io/RamboOnDiet.jl/)
-- [Manual overview](docs/src/index.md)
-- [Three-body tutorial](docs/src/generated/three-body.md)
-- [B decay cascade and Arrow export](docs/src/generated/b-decay.md)
+The manual is at <https://mmikhasenko.github.io/RamboOnDiet.jl/>.
 
-Build the rendered manual locally with:
+Build it locally with:
 
 ```bash
 julia -O1 --project=docs docs/generate.jl
