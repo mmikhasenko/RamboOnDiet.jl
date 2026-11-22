@@ -93,6 +93,16 @@ The coordinate tables are in the
 Random samplers redraw an exact-zero mass input. Deterministic maps throw
 `DomainError` for a mass endpoint. Angular coordinates may include both endpoints.
 
+## Mass window
+
+The first unit-cube coordinate sets the mass of the recoiling cluster. Restrict
+that coordinate to a subinterval and multiply `phase_space_weight` by the
+interval width to sample four-body phase space inside a three-pion mass window.
+The [four-body mass-window page](docs/src/generated/four-body-mass-window.md)
+records the comparison with an independent quadrature. That sample is run by
+`docs/generate.jl` and committed as Markdown. The documentation build renders
+the page and does not rerun it.
+
 ## Documentation
 
 - [Documentation website](https://mmikhasenko.github.io/RamboOnDiet.jl/)
@@ -103,9 +113,11 @@ Random samplers redraw an exact-zero mass input. Deterministic maps throw
 Build the rendered manual locally with:
 
 ```bash
-julia --project=docs docs/generate.jl
+julia -O1 --project=docs docs/generate.jl
 julia --project=docs docs/make.jl
 ```
 
 Then open `docs/build/index.html`. After editing a tutorial `.jl` file, regenerate
 and commit its Markdown in `docs/src/generated/`. CI runs only `docs/make.jl`.
+`-O1` avoids an LLVM optimizer crash seen with Julia 1.11.5 on Apple Silicon
+while generating the four-body mass-window page.

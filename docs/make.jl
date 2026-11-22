@@ -18,5 +18,6 @@ makedocs(
         "Edge cases" => "edge-cases.md",
         "Three-Body Tutorial" => "generated/three-body.md",
         "B Decay Tutorial" => "generated/b-decay.md",
+        "Four-Body Mass Window" => "generated/four-body-mass-window.md",
     ],
 )

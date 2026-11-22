@@ -222,6 +222,9 @@ Let `v` be the unique root in `[0, 1]` of `3v² - 2v³ = u_1`.
 
 The axes are those used by the rotation-free boosts in the implementation. The
 polar angles are not automatically helicity angles along each cluster's flight direction.
+The [four-body mass window](generated/four-body-mass-window.md) keeps `m234` inside
+a chosen window by restricting `u_1` and multiplying the event weight by the width
+of that interval.
 
 ## Aligned four-vectors
 
