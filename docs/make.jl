@@ -13,6 +13,7 @@ makedocs(
     remotes = nothing,
     pages = [
         "Home" => "index.md",
+        "API reference" => "api.md",
         "Algorithm" => "algorithm.md",
         "Implementation" => "implementation.md",
         "Edge cases" => "edge-cases.md",
