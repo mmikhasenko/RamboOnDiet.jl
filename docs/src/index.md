@@ -47,6 +47,8 @@ Use `PhaseSpaceGenerator(masses, sqrt_s)` for a parent at rest, or
 Read momenta through `point[i]` or `point.momenta`. The ordinary coordinate count
 is `generator.random_numbers`; the aligned count is zero for two bodies and `3 * length(generator) - 7` otherwise.
 
+Docstrings for each name are on the [API reference](api.md) page.
+
 Kinematic analysis uses the existing four-vector operations:
 
 ```julia
@@ -67,23 +69,14 @@ and are not part of the supported public API. In particular, the old `mandelstam
 helper computed a pair invariant mass squared, now written directly as
 `mass2(point[i] + point[j])`.
 
-```@docs
-PhaseSpaceGenerator
-generate_point
-generate_from_unit_hypercube
-generate_aligned_point
-generate_aligned_from_unit_hypercube
-PhaseSpacePoint
-phase_space_weight
-```
-
 ```@contents
-Pages = ["algorithm.md", "implementation.md", "edge-cases.md", "generated/three-body.md", "generated/b-decay.md", "generated/four-body-mass-window.md", "maintainers.md"]
+Pages = ["api.md", "algorithm.md", "implementation.md", "edge-cases.md", "generated/three-body.md", "generated/b-decay.md", "generated/four-body-mass-window.md", "maintainers.md"]
 Depth = 2
 ```
 
 ## Guide
 
+- [API reference](api.md)
 - [Algorithm overview](algorithm.md)
 - [Implementation details](implementation.md)
 - [Edge cases](edge-cases.md)
