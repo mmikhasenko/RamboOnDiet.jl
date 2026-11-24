@@ -1,7 +1,7 @@
 # Algorithm
 
 `RamboOnDiet.jl` implements the sequential RAMBO-on-diet construction for an `n`-body
-phase-space point with total four-momentum `P` and outgoing masses `m_1, \ldots, m_n`.
+phase-space point with total four-momentum $P$ and outgoing masses $m_1, \ldots, m_n$.
 The public entry point is `PhaseSpaceGenerator`, but the core map is easiest to
 read as a sequence of deterministic steps fed by `3n - 4` uniform random numbers.
 
@@ -23,7 +23,7 @@ Q_2 \to p_2 + Q_3,\quad \ldots,\quad
 Q_{n-1} \to p_{n-1} + p_n,
 ```
 
-where the intermediate cluster masses `M_i = \sqrt{Q_i^2}` are generated from the
+where the intermediate cluster masses $M_i = \sqrt{Q_i^2}$ are generated from the
 unit hypercube.
 
 This is the same general strategy introduced for massless phase space by Kleiss, Stirling,
@@ -81,8 +81,8 @@ and defines reduced masses
 M_i = \mu_i + \tau_i.
 ```
 
-For each `i = 2,\ldots,n-1`, a uniform random number `r_i` is converted into a parameter
-`u_i \in [0,1]` by solving
+For each $i = 2,\ldots,n-1$, a uniform random number $r_i$ is converted into a parameter
+$u_i \in [0, 1]$ by solving
 
 ```math
 r_i = (a_i + 1) u_i^{a_i} - a_i u_i^{a_i + 1},
@@ -99,11 +99,11 @@ M_i = \mu_i + \tau_i.
 ```
 
 The square root is important: the recursion is naturally written in terms of invariant
-masses squared, so the masses themselves inherit a `\sqrt{u_i}` factor.
+masses squared, so the masses themselves inherit a $\sqrt{u_i}$ factor.
 
 ## Angles and two-body decays
 
-For each decay step `Q_i \to p_i + Q_{i+1}`, the generator takes two more uniform random
+For each decay step $Q_i \to p_i + Q_{i+1}$, the generator takes two more uniform random
 numbers and maps them to
 
 ```math
@@ -122,8 +122,8 @@ with the Källén function
 \lambda(x,y,z) = x^2 + y^2 + z^2 - 2(xy + yz + zx).
 ```
 
-The spatial direction is built from `(\cos\theta_i,\phi_i)`, the visible daughter is
-placed at `+\vec q_i`, and the next cluster at `-\vec q_i`.
+The spatial direction is built from $(\cos\theta_i, \phi_i)$, the visible daughter is
+placed at $+\vec{q}_i$, and the next cluster at $-\vec{q}_i$.
 
 ## Boost chain
 
@@ -142,7 +142,7 @@ roundoff.
 The returned `PhaseSpacePoint` stores a weight:
 
 - for `m_i = 0`, the weight is constant and equal to the massless phase-space volume,
-- for `m_i \neq 0`, the same massless map is corrected by the RAMBO-on-diet Jacobian.
+- for $m_i \neq 0$, the same massless map is corrected by the RAMBO-on-diet Jacobian.
 
 In the implementation this is written as
 
@@ -166,7 +166,7 @@ The two-body density is
 ```
 
 In `src/generator.jl`, this factorization appears as two explicit products: one loop over `i = 2:(n - 1)`
-for the `M_i / \mu_i` terms and one loop over `i = 2:n` for the ratio of massive to
+for the $M_i / \mu_i$ terms and one loop over `i = 2:n` for the ratio of massive to
 massless two-body densities.
 
 That is why the three-body massless Dalitz plot is flat without weights, while the

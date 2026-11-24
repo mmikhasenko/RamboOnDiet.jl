@@ -119,9 +119,9 @@ The threshold weight is returned as zero because the phase-space measure collaps
 The package deliberately uses the main sampler for the two-body and three-body validations.
 These are the cases where the expected geometry is clearest:
 
-- 2-body: fixed breakup momentum and isotropic angular distribution,
-- 3-body massless: flat Dalitz density without weights,
-- 3-body massive: flat Dalitz density after weighting by the returned Jacobian.
+- two-body: fixed breakup momentum and isotropic angular distribution,
+- three-body massless: flat Dalitz density without weights,
+- three-body massive: flat Dalitz density after weighting by the returned Jacobian.
 
 That makes the three-body Dalitz plots a direct probe of the core mapping rather than of a
 special-case implementation.

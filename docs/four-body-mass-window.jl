@@ -1,6 +1,6 @@
 # # Four-body sampling in a three-pion mass window
 #
-# A 190 GeV/c π− beam on a proton at rest produces `[recoil, π−, π+, π−]`.
+# A 190 GeV/c π⁻ beam on a proton at rest produces `[recoil, π⁻, π⁺, π⁻]`.
 # Particle 1 is the recoil. In the
 # [four-body coordinate table](../algorithm.md#Four-bodies),
 # `u₁` is the mass of the cluster formed by particles 2, 3, and 4, so here it
@@ -81,7 +81,7 @@ Page(note) #hide
 # restriction, not an accept/reject decision.
 #
 # The second coordinate is the remaining mass input and has to stay in the open
-# unit interval. The daughters come out as `[recoil, π−, π+, π−]`.
+# unit interval. The daughters come out as `[recoil, π⁻, π⁺, π⁻]`.
 
 function restricted_event(rng)
     coordinates = rand(rng, 8)
@@ -195,7 +195,7 @@ nothing
 # ## Sample
 #
 # One hundred thousand events, seed `20261021`. The weights estimate the
-# absolute integral of `d\Phi_4` in each mass bin.
+# absolute integral of $d\Phi_4$ in each mass bin.
 
 function sample_window(; n = 100_000, seed = 20261021)
     rng = MersenneTwister(seed)
