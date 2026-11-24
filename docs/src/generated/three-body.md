@@ -5,10 +5,10 @@ EditURL = "../../three-body.jl"
 # Three-body generation and Dalitz processing
 
 This tutorial shows a simple three-body workflow:
-1. build the total-state four-vector,
-2. generate events with `RamboOnDiet.jl`,
-3. move the samples into a `DataFrame`,
-4. plot Dalitz histograms with `Plots.jl`.
+1. generate events with `RamboOnDiet.jl`,
+2. move the samples into a `DataFrame`,
+3. plot Dalitz histograms with `Plots.jl`,
+4. build an explicit total four-momentum for a moving parent.
 
 ````@example three-body
 using Random
@@ -26,7 +26,7 @@ default(size = (780, 620), legend = false)
 
 ## Utility helpers
 
-We will use the invariant-mass pairs `(s23, s12) = (\sigma_1, \sigma_3)` as Dalitz coordinates.
+We will use the invariant-mass pairs $(s_{23}, s_{12}) = (\sigma_1, \sigma_3)$ as Dalitz coordinates.
 
 ````@example three-body
 function events_table(points)
@@ -38,7 +38,15 @@ function events_table(points)
     )
 end
 
-function dalitz_heatmap(df, ms; bins = 60, weights = nothing, title = "")
+function dalitz_heatmap(
+    df,
+    ms;
+    bins = 60,
+    weights = nothing,
+    title = "",
+    xlabel = "m²(Kπ)",
+    ylabel = "m²(pK)",
+)
     xedges = collect(range(lims1(ms)...; length = bins + 1))
     yedges = collect(range(lims3(ms)...; length = bins + 1))
     xcenters = @. (xedges[1:(end-1)] + xedges[2:end]) / 2
@@ -79,8 +87,8 @@ function dalitz_heatmap(df, ms; bins = 60, weights = nothing, title = "")
         xcenters,
         ycenters,
         z;
-        xlabel = "m²(Kπ)",
-        ylabel = "m²(pK)",
+        xlabel = xlabel,
+        ylabel = ylabel,
         title = title,
         colorbar_title = isnothing(weights) ? "counts" : "weighted counts",
         aspect_ratio = :equal,
@@ -115,12 +123,14 @@ massless_plot = dalitz_heatmap(
     massless_ms;
     bins = 60,
     title = "Massless 3-body Dalitz population",
+    xlabel = "m²(23)",
+    ylabel = "m²(12)",
 )
 
 massless_plot
 ````
 
-## Massive example: `\Lambda_c^+ \to p K^- \pi^+`
+## Massive example: Λc⁺ → p K⁻ π⁺
 
 For non-zero masses, the main sampler produces weighted events.
 The physically flat phase-space density is recovered by filling the Dalitz histogram
@@ -144,7 +154,7 @@ massive_plot = dalitz_heatmap(
     massive_ms;
     bins = 60,
     weights = massive_df.jacobian,
-    title = "Lc -> pKπ weighted Dalitz from the main sampler",
+    title = "Λc⁺ → p K⁻ π⁺",
 )
 
 massive_plot

@@ -2,14 +2,14 @@
 EditURL = "../../b-decay.jl"
 ```
 
-# Cascade decay: `B^+ \to D^{*+} D^- K^+` with `D^{*+} \to D^0 \pi^+`
+# Cascade decay: B⁺ → D\*⁺ D⁻ K⁺ with D\*⁺ → D⁰ π⁺
 
 A short end-to-end example: generate weighted phase-space events for
 
 ```text
-B^+  ->  D^{*+}  +  D^-  +  K^+
-         |
-         +-> D^0 + \pi^+
+B⁺ → D*⁺ + D⁻ + K⁺
+     |
+     +→ D⁰ + π⁺
 ```
 
 and store `100_000` of them in [Apache Arrow](https://arrow.apache.org/) format.
@@ -20,7 +20,7 @@ Non-zero masses require **importance-sampling weights**. For this cascade
 w = w_{B \to D^{*+} D^- K^+} \times w_{D^{*+} \to D^0 \pi^+},
 ```
 
-and the second factor is constant when `D^{*+}` is on shell. Use the `weight`
+and the second factor is constant when D*⁺ is on shell. Use the `weight`
 column whenever you integrate observables or fill histograms.
 This example fixes the intermediate mass and samples both decays without
 spin correlations or a matrix element; it is not unrestricted four-body phase space.

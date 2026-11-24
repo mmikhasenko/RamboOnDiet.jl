@@ -12,7 +12,7 @@ The package is organized around three ideas:
 - a phase-space weight that is constant in the massless case and becomes the corrective
   Jacobian for massive final states.
 
-The implementation always uses the same main sampler. The 2-body and 3-body cases are
+The implementation always uses the same main sampler. The two-body and three-body cases are
 validation anchors because their expected geometry is especially transparent, not because
 they use a separate generator.
 
@@ -77,10 +77,10 @@ Depth = 2
 ## Guide
 
 - [API reference](api.md)
-- [Algorithm overview](algorithm.md)
-- [Implementation details](implementation.md)
+- [Algorithm](algorithm.md)
+- [Implementation](implementation.md)
 - [Edge cases](edge-cases.md)
 - [Three-body generation and Dalitz processing](generated/three-body.md)
-- [B decay cascade and Arrow export](generated/b-decay.md)
+- [Cascade decay B⁺ → D\*⁺ D⁻ K⁺](generated/b-decay.md)
 - [Four-body sampling in a three-pion mass window](generated/four-body-mass-window.md)
 - [For maintainers](maintainers.md)
