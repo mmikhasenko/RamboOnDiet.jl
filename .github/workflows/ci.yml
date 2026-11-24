@@ -4,33 +4,44 @@ on:
   push:
     branches:
       - main
+    tags: ["*"]
   pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    permissions:
+      actions: write
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+          - "1.10"
+          - "1"
+        os:
+          - ubuntu-latest
+        arch:
+          - x64
     steps:
       - uses: actions/checkout@v5
-
-      - name: Install Julia
-        run: |
-          curl -fsSL https://install.julialang.org | sh -s -- --yes --default-channel=1.11
-          echo "$HOME/.juliaup/bin" >> "$GITHUB_PATH"
-
-      - uses: actions/cache@v5
+      - uses: julia-actions/setup-julia@v3
         with:
-          path: |
-            ~/.julia/artifacts
-            ~/.julia/compiled
-            ~/.julia/packages
-            ~/.julia/scratchspaces
-            ~/.julia/registries
-          key: ${{ runner.os }}-julia-${{ hashFiles('**/Project.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-julia-
-
-      - name: Build package
-        run: julia --project=. -e 'using Pkg; Pkg.instantiate(); Pkg.build()'
-
-      - name: Run tests
-        run: julia --project=. -e 'using Pkg; Pkg.test()'
+          version: ${{ matrix.version }}
+          arch: ${{ matrix.arch }}
+      - uses: julia-actions/cache@v2
+      - uses: julia-actions/julia-buildpkg@v1
+      - uses: julia-actions/julia-runtest@v1
+      - uses: julia-actions/julia-processcoverage@v1
+      - uses: codecov/codecov-action@v6
+        with:
+          files: lcov.info
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false

@@ -2,6 +2,7 @@
 
 [![Docs](https://img.shields.io/badge/docs-dev-blue.svg)](https://mmikhasenko.github.io/RamboOnDiet.jl/)
 [![CI](https://github.com/mmikhasenko/RamboOnDiet.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/mmikhasenko/RamboOnDiet.jl/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/mmikhasenko/RamboOnDiet.jl/graph/badge.svg)](https://codecov.io/gh/mmikhasenko/RamboOnDiet.jl)
 [![Docs workflow](https://github.com/mmikhasenko/RamboOnDiet.jl/actions/workflows/docs.yml/badge.svg)](https://github.com/mmikhasenko/RamboOnDiet.jl/actions/workflows/docs.yml)
 
 `RamboOnDiet.jl` samples relativistic `n`-body phase space with a RAMBO-on-diet map.
